@@ -3664,7 +3664,7 @@ node-pre-gyp@0.13.0:
     semver "^5.3.0"
     tar "^4"
 
-node@^10.16.0:
+node@^10.17.0:
   version "10.18.0"
   resolved "https://registry.yarnpkg.com/node/-/node-10.18.0.tgz#2a8bf0d407dd1e777008d758553f9074f036facd"
   integrity sha512-QRG8rskm+2bswkc8c44rVeb01wLJSwWJNtesYhtws0AmEzU1AcTu7iSuv5hnL7Tc6F7tRTYfY7veu4QnOtTBIA==
@@ -3984,9 +3984,9 @@ path-to-regexp@0.1.7:
   integrity sha1-32BBeABfUi8V60SQ5yR6G/qmf4w=
 
 picomatch@^2.0.4, picomatch@^2.0.7:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.1.1.tgz#ecdfbea7704adb5fe6fb47f9866c4c0e15e905c5"
-  integrity sha512-OYMyqkKzK7blWO/+XZYP6w8hH0LDvkBvdvKukti+7kqYFCiEAk+gI3DWnryapc0Dau05ugGTy0foQ6mqn4AHYA==
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.1.tgz#21bac888b6ed8601f831ce7816e335bc779f0a4a"
+  integrity sha512-ISBaA8xQNmwELC7eOjqFKMESB2VIqt4PPDD0nsS95b/9dZXvVKOlz9keMSnoGGKcOHXfTvDD6WMaRoSc9UuhRA==
 
 pify@^3.0.0:
   version "3.0.0"
