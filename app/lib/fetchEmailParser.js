@@ -161,8 +161,8 @@ export const events = async (req, res) => {
 
   const updateDataInModels = async (data) =>{
     const meetingsAdded = await data.save();
-   // const invitesArray = meetingsAdded.invites.split(',');
-    const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
+    const invitesArray = meetingsAdded.invites.split(',');
+  //  const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
     // if(!invitesArray.length) return null;
     const updatedArray = invitesArray.split(',').map((item)=> item);
        updatedArray.map((item) => {
