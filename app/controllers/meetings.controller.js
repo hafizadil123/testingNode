@@ -64,8 +64,7 @@ class MeetingsController extends BaseController {
    */
 
   fetch = async (req, res, _next) => {
-    // const userId = req.query.userId;
-    const userId = '5dfb604ef71b907b18a8dda9';
+     const userId = req.query.userId;
     const userMeetings = await Meeting.find({ _user: userId }).populate(
       '_user'
     );
@@ -75,7 +74,8 @@ class MeetingsController extends BaseController {
   };
 
   getMembers = async (req, res, _next) => {
-    const meetingId = '5dffad06a9d36afc546e5f6d';
+    const meetingId = req.query.meetingId;
+    // const meetingId = '5dffad06a9d36afc546e5f6d';
     const members = await Meeting.find({ _id: meetingId });
     const memberCount = members.map((item) => item.invites.split(','));
     const feedback = await Feedback.find({ meetingId: meetingId });
