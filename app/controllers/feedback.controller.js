@@ -82,6 +82,7 @@ class FeedbackController extends BaseController {
     }
   }
    getResult = async (res, positiveReviews, negativeReviews, meeting, userId) => {
+     console.log('clcccc');
     const getAnswerArray = await QuestionAnswers.find({});
     getAnswerArray.map((item) => item.answer);
    await Meeting.find({ _user: userId }).populate('_user').exec(function(err, userMeetings) {

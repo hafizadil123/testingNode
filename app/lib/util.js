@@ -29,7 +29,7 @@ transport.sendMail(message, function(err, info) {
   };
 
   export const forgotPasswordEmail = async (user) => {
-      const updateUrl = 'http://18.224.18.173//update-password';
+      const updateUrl = 'http://18.224.18.173/update-password';
       const userId = user._id;
     let transport = nodemailer.createTransport({
         host: 'smtp.mailtrap.io',
