@@ -40,9 +40,9 @@ transport.sendMail(message, function(err, info) {
         },
     });
     const message = {
-      from: 'saeed@thirtyNorth.dev', // Sender address
-      to: 'adil@gmail.com',         // List of recipients
-      subject: 'Good Meeting Subject', // Subject line
+      from: 'havea@goodmeeting.today', // Sender address
+      to: user.email,         // List of recipients
+      subject: 'Password Reset Request', // Subject line
       html: forgotPasswordTemplate(updateUrl, userId),
   };
   transport.sendMail(message, function(err, info) {
@@ -75,7 +75,7 @@ const InviteeObject = await Invites.findOne({ _id: inviteId });
 const meetingId = InviteeObject.meetingId;
 
 const message = {
-  from: 'saeed@thirtyNorth.dev', // Sender address
+  from: 'havea@goodmeeting.today', // Sender address
   to: sendTo,         // List of recipients
   subject: 'Good Meeting Subject', // Subject line
   html: feedbackEmailTemplate(meetingId, sendTo, inviteId),
