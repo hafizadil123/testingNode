@@ -11,12 +11,6 @@ import { events } from '../app/lib/fetchEmailParser';
 import { sendFeedbackEmailsToInvites } from '../app/lib/util';
 
 const app = express();
-
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
 // Helmet helps you secure your Express apps by setting various HTTP headers
 // https://github.com/helmetjs/helmet
 app.use(helmet());
