@@ -129,8 +129,8 @@ export const events = async (req, res) => {
             }
             if (x == eventsDta.length - 1) {
                const emailFetchedData = eventsDta.map((item) => {
-              // const userId = findUserIdByEmail(item.Organizer);
-               const userId = '5dfb604ef71b907b18a8dda9';
+               const userId = findUserIdByEmail(item.Organizer);
+             //  const userId = '5dfb604ef71b907b18a8dda9';
                 if (userId) {
                     const mapData = {
                         subject: item.Subject,
