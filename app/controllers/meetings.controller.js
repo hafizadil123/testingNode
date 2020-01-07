@@ -21,7 +21,7 @@ class MeetingsController extends BaseController {
       const { subject, invites, dateEnd } = meetings;
       const members = invites.split(',').length;
       const getAnswerArray = await QuestionAnswers.find({});
-     getAnswerArray.map((item) => item.answer);
+      getAnswerArray.map((item) => item.answer);
       const feedback = await Feedback.find({ meetingId });
       const gooMeeting = feedback.map((item) => item.isGood === true);
       const badMeeting = feedback.map((item) => item.isGood === false);
@@ -29,17 +29,32 @@ class MeetingsController extends BaseController {
       const noResponse = totalFeedback - members;
       result = feedback.map((el) => {
         return el.feedbackResults.map((item) => item.answerId);
-          });
-          let mergedResults = [].concat.apply([], result);
-          const getAns= getAnswerArray.map((item) => item.answers);
-          let getAnsMerged = [].concat.apply([], getAns);
-          const matchedResults= mergedResults.map((item) => getAnsMerged.filter((el) => el.id == item));
-          let removeArraySymbol = [].concat.apply([], matchedResults);
-          const total = removeArraySymbol.reduce((a, b) => ({ weightage: a.weightage + b.weightage }));
-          // count total and devide to total
-          const avgMeetingScore = Math.trunc(total.weightage / removeArraySymbol.length);
-          // res.json(mergedResults);
-     res.json({ subject, members, dateEnd, totalFeedback, noResponse, avgMeetingScore, goodMeeting: gooMeeting.length, badMeeting: badMeeting.length });
+      });
+      let mergedResults = [].concat.apply([], result);
+      const getAns = getAnswerArray.map((item) => item.answers);
+      let getAnsMerged = [].concat.apply([], getAns);
+      const matchedResults = mergedResults.map((item) =>
+        getAnsMerged.filter((el) => el.id == item)
+      );
+      let removeArraySymbol = [].concat.apply([], matchedResults);
+      const total = removeArraySymbol.reduce((a, b) => ({
+        weightage: a.weightage + b.weightage,
+      }));
+      // count total and devide to total
+      const avgMeetingScore = Math.trunc(
+        total.weightage / removeArraySymbol.length
+      );
+      // res.json(mergedResults);
+      res.json({
+        subject,
+        members,
+        dateEnd,
+        totalFeedback,
+        noResponse,
+        avgMeetingScore,
+        goodMeeting: gooMeeting.length,
+        badMeeting: badMeeting.length,
+      });
     } catch (err) {
       err.status = err.name === 'CastError' ? 404 : 500;
       next(err);
@@ -64,30 +79,46 @@ class MeetingsController extends BaseController {
    */
 
   fetch = async (req, res, _next) => {
-     const userId = req.query.userId;
+    const userId = req.query.userId;
     const userMeetings = await Meeting.find({ _user: userId }).populate(
       '_user'
     );
     // const members = userMeetings.map((item) => item.invites.split(',').length);
 
-    res.json(userMeetings);
+    //  userMeetings me sari ek user ki meetings mil rahi hain... meny us meeting kitny members r kitny bndo ny feedback
+    const getMembersArray = userMeetings.map(
+      async (item) => await this.getMembers(item._id)
+    );
+    const result = Promise.all(getMembersArray);
+    result.then((data) => {
+      const final = this.getData(userMeetings, data);
+      res.json(final);
+    });
   };
 
-  getMembers = async (req, res, _next) => {
-    const meetingId = req.query.meetingId;
+  getData = (userMeetings, memberData) => {
+    return userMeetings.map((meeting, index) => {
+      return {
+        meeting,
+        ...memberData[index],
+      };
+    });
+  };
+
+  getMembers = async (id) => {
+    const meetingId = id;
     // const meetingId = '5dffad06a9d36afc546e5f6d';
     const members = await Meeting.find({ _id: meetingId });
     const memberCount = members.map((item) => item.invites.split(','));
     const feedback = await Feedback.find({ meetingId: meetingId });
     const membersFeedback = {
-      members: memberCount.length, feebackCount: feedback.length,
+      members: memberCount.length,
+      feebackCount: feedback.length,
     };
-    res.json(membersFeedback);
-  }
+    return membersFeedback;
+  };
 
-  getFeedbacks = async () => {
-
-  }
+  getFeedbacks = async () => {};
 
   /**
    * req.user is populated by middleware in routes.js
