@@ -128,9 +128,8 @@ export const events = async (req, res) => {
                 });
             }
             if (x == eventsDta.length - 1) {
-               const emailFetchedData = eventsDta.map((item) => {
-              // const userId = findUserIdByEmail(item.Organizer);
-              const userId = '5e14c1ff2824c72182d0417e';
+               const emailFetchedData = eventsDta.map(async (item) => {
+              const userId = await findUserId(item.Organizer);
                 if (userId) {
                     const mapData = {
                         subject: item.Subject,
@@ -150,7 +149,6 @@ export const events = async (req, res) => {
                 }
                 });
 
-                console.log('events dataddddddd', emailFetchedData);
               // res.status(200).json({ status: true, events: eventsDta });
             }
           }
@@ -158,13 +156,16 @@ export const events = async (req, res) => {
       });
     });
   }
-
+  const findUserId = (item) =>{
+    const id = findUserIdByEmail(item);
+    return id;
+  };
   const updateDataInModels = async (data) =>{
     const meetingsAdded = await data.save();
     const invitesArray = meetingsAdded.invites.split(',');
   //  const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
     // if(!invitesArray.length) return null;
-    const updatedArray = invitesArray.split(',').map((item)=> item);
+    const updatedArray = invitesArray.map((item)=> item);
        updatedArray.map((item) => {
         const mapInvitesData = {
           invitesEmail: item,

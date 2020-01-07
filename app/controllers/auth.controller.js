@@ -9,7 +9,7 @@ class AuthController extends BaseController {
       const user = await User.findOne({ email });
 
       if (!user || !user.authenticate(password)) {
-        const err = new Error('email or passwored invalid.');
+        const err = new Error('email or password invalid.');
         err.status = 401;
         return next(err);
       }

@@ -56,7 +56,7 @@ class UsersController extends BaseController {
     try {
       const savedUser = await newUser.save();
       const token = savedUser.generateToken();
-      await sendRegistrationEmail();
+      await sendRegistrationEmail(params.email);
       res.status(201).json({ token, message: 'Registration email has been sent please verify!' });
     } catch(err) {
       err.status = 400;

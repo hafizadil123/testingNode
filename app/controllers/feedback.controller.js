@@ -118,9 +118,14 @@ class FeedbackController extends BaseController {
   feedbackStats = async (req, res, _next) => {
     const positiveReviews = await Feedback.find({ isGood: true });
     const negativeReviews = await Feedback.find({ isGood: false });
-    const meeting = await Meeting.find({});
+    const meeting = await Meeting.find({
+      timestamp: {
+        $gte: new Date(new Date() - 7 * 60 * 60 * 24 * 1000),
+    },
+    });
     const userId = req.query.userId;
     // get user meetings with Id
+
   this.getResult(res, positiveReviews.length, negativeReviews.length, meeting.length, userId);
   }
   delete = async (req, res, next) => {

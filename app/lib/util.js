@@ -4,7 +4,7 @@ import User from '../models/user.js';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
 
-export const sendRegistrationEmail = async () =>{
+export const sendRegistrationEmail = async (sendTo) =>{
     let transport = nodemailer.createTransport({
       host: 'smtp.mailtrap.io',
       port: 2525,
@@ -14,9 +14,9 @@ export const sendRegistrationEmail = async () =>{
       },
   });
   const message = {
-    from: 'saeed@thirtyNorth.dev', // Sender address
-    to: 'adil@gmail.com',         // List of recipients
-    subject: 'Good Meeting Subject', // Subject line
+    from: 'havea@goodmeeting.today', // Sender address
+    to: sendTo,        // List of recipients
+    subject: 'Welcome In Good Meeting', // Subject line
     html: reigstrationEmailTemplate,
 };
 transport.sendMail(message, function(err, info) {
@@ -54,11 +54,12 @@ transport.sendMail(message, function(err, info) {
   });
   };
 
-export const findUserIdByEmail = async(email) => {
+export const findUserIdByEmail = async (email) => {
   const user = await User.findOne({ email });
   if(!user) {
     return false;
-  } return user._id;
+  }
+  return user._id;
 }
 ;
 const sendFeedbackMail = async (sendTo, inviteId) =>{
