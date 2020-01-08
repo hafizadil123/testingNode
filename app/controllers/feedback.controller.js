@@ -3,6 +3,7 @@
 import BaseController from './base.controller';
 import Feedback from '../models/feedback';
 import Invites from '../models/invites';
+import _ from 'lodash';
 import Meeting from '../models/meetings';
 import QuestionAnswers from '../models/questionAnswers';
 class FeedbackController extends BaseController {
@@ -96,73 +97,81 @@ class FeedbackController extends BaseController {
     meeting,
     userId
   ) => {
-    let pos = 0;
-    let neg = 0;
-    let avgValue = 0;
-    let tot = 0;
-    const getAnswerArray = await QuestionAnswers.find({});
-    getAnswerArray.map((item) => item.answer);
-     await Meeting.find({ _user: userId })
-      .populate('_user')
-      .exec(function(err, userMeetings) {
+      const returnData = userMeet.map((item) => {
         let result = '';
-        if (err) {
-          return res.status(500).json(err);
-        } else {
-         userMeetings.map((item) => {
-           return Feedback.find({ meetingId: item._id }).exec(function(
+        return Feedback.find({ meetingId: item._id }).exec(function(
               err,
               userMeetingFeedback
             ) {
               if (err) {
-                return res.status(500).json(err);
+                //
               } else {
+               if(userMeetingFeedback && userMeetingFeedback.length > 0) {
                 result =
-                  userMeetingFeedback &&
-                  userMeetingFeedback.length > 0 &&
-                  userMeetingFeedback.map((el) => {
-                    return el.feedbackResults.map((item) => item.answerId);
-                  });
-                // make array flattened
-                let mergedResults = [].concat.apply([], result || []);
-                const getAns =
-                  getAnswerArray &&
-                  getAnswerArray.length > 0 &&
-                  getAnswerArray.map((item) => item.answers);
-                let getAnsMerged = [].concat.apply([], getAns || []);
-                const matchedResults = mergedResults.map((item) =>
-                  getAnsMerged.filter((el) => el.id == item)
+                userMeetingFeedback &&
+                userMeetingFeedback.length > 0 &&
+                userMeetingFeedback.map((el) => {
+                  return el.feedbackResults.map((item) => item.answerId);
+                });
+              // make array flattened
+              let mergedResults = [].concat.apply([], result || []);
+              const getAns =
+                getAnswerArray &&
+                getAnswerArray.length > 0 &&
+                getAnswerArray.map((item) => item.answers);
+              let getAnsMerged = [].concat.apply([], getAns || []);
+              const matchedResults = mergedResults.map((item) =>
+                getAnsMerged.filter((el) => el.id == item)
+              );
+              let removeArraySymbol = [].concat.apply(
+                [],
+                matchedResults || []
+              );
+              let total = 0;
+              total =
+                removeArraySymbol &&
+                removeArraySymbol.length > 0 &&
+                removeArraySymbol.reduce(
+                  (a, b) => ({ weightage: a.weightage + b.weightage }, 0)
                 );
-                let removeArraySymbol = [].concat.apply(
-                  [],
-                  matchedResults || []
-                );
-                let total = 0;
-                total =
-                  removeArraySymbol &&
-                  removeArraySymbol.length > 0 &&
-                  removeArraySymbol.reduce(
-                    (a, b) => ({ weightage: a.weightage + b.weightage }, 0)
-                  );
-                // count total and devide to total
-                const avg = Math.trunc(
-                  total.weightage / removeArraySymbol.length
-                );
-                // return json response
-                res.json({ positiveReviews,
-                 negativeReviews,
-                avg: avg || 0,
-               meeting,
-               });
+              // count total and devide to total
+              const avg = Math.trunc(
+                total.weightage / removeArraySymbol.length
+              );
+              // return json response
+            return { positiveReviews,
+               negativeReviews,
+              avg: avg || 0,
+             meeting,
+            };
+               }
               }
             });
           });
-        }
-      });
+          res.json(returnData);
   };
+
+
+  getAvg = async (userId) => {
+    const userMeet = await Meeting.find({ _user: userId });
+    let updatedValues;
+    if(userMeet.length > 0) {
+      const isUserMeetingFeedbackExist = userMeet.map((item) =>
+      Feedback.find({ meetingId: item._id }).then((res) => res));
+     Promise.all(isUserMeetingFeedbackExist).then(function(values) {
+     updatedValues = values;
+  });
+  return updatedValues;
+}
+return [];
+  }
+
+
   feedbackStats = async (req, res, next) => {
     const positiveReviews = await Feedback.find({ isGood: true });
     const negativeReviews = await Feedback.find({ isGood: false });
+    const getAnswerArray = await QuestionAnswers.find({});
+    let avg = 0;
     const meeting = await Meeting.find({
       createdAt: {
         $gte: new Date(new Date() - 7 * 60 * 60 * 24 * 1000),
@@ -171,13 +180,49 @@ class FeedbackController extends BaseController {
     const userId = req.query.userId;
     // get user meetings with Id
 
-    this.getResult(
-      res,
-      positiveReviews.length,
-      negativeReviews.length,
-      meeting.length,
-      userId
-    );
+//    this.getAvg(userId).then((isFeedbackExist) => {
+//     if(_.flattenDeep(isFeedbackExist.length) === 0) {
+//       avg = 0;
+//     }else {
+//     isFeedbackExist = _.flattenDeep(isFeedbackExist).map((el) => {
+//        return el.feedbackResults.map((item) => item.answerId);
+//      });
+//      console.log('saflsdjfldsjfljdslf', isFeedbackExist);
+//      let mergedResults = [].concat.apply([], isFeedbackExist || []);
+//      const getAns = getAnswerArray.map((item) => item.answer);
+//      let getAnsMerged = [].concat.apply([], getAns || []);
+//      const matchedResults = mergedResults.map((item) =>
+//      getAnsMerged.filter((el) => el.id == item)
+//    );
+//    let removeArraySymbol = [].concat.apply(
+//      [],
+//      matchedResults || []
+//    );
+//    let total = 0;
+//    total =
+//    removeArraySymbol &&
+//    removeArraySymbol.length > 0 &&
+//    removeArraySymbol.reduce(
+//      (a, b) => ({ weightage: a.weightage + b.weightage }, 0)
+//    );
+//  // count total and devide to total
+//  const avgValue = Math.trunc(
+//    total.weightage / removeArraySymbol.length
+//  );
+//       avg = avgValue;
+//     }
+//    });
+
+
+      res.json({ positiveReviews: positiveReviews.length,
+         negativeReviews: negativeReviews.length, meeting: meeting.length, avg: 0 });
+    // this.getResult(
+    //   res,
+    //   positiveReviews.length,
+    //   negativeReviews.length,
+    //   meeting.length,
+    //   userId
+    // );
   };
   delete = async (req, res, next) => {
     /**
