@@ -1,8 +1,9 @@
 import nodemailer from 'nodemailer';
-import { reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate} from './emails';
+import { reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate } from './emails';
 import User from '../models/user.js';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
+const dateFormat = require('dateFormat');
 
 export const sendRegistrationEmail = async (sendTo) =>{
     let transport = nodemailer.createTransport({
@@ -90,11 +91,19 @@ transport.sendMail(message, function(err, info) {
 };
 export const sendFeedbackEmailsToInvites = async() =>{
   const invites = await Invites.find({});
+  let CurrentDate = new Date();
+   let updatedCurrentDate = dateFormat(CurrentDate, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
   invites.map((item) => {
     if(!item.isEmailSent) {
-      sendFeedbackMail(item.invitesEmail, item._id);
-      item.isEmailSent = true;
-      item.save();
+        Meeting.findOne({ _id: item.meetingId }).then((meeting) => {
+          if(updatedCurrentDate >= meeting.dateEnd) {
+            sendFeedbackMail(item.invitesEmail, item._id);
+            item.isEmailSent = true;
+            item.save();
+          } else {
+            console.log('Meeting time not end till yet');
+          }
+        });
     }
   });
 };
