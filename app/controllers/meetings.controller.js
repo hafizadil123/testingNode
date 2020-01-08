@@ -26,7 +26,7 @@ class MeetingsController extends BaseController {
       const gooMeeting = feedback.map((item) => item.isGood === true);
       const badMeeting = feedback.map((item) => item.isGood === false);
       const totalFeedback = feedback.length;
-      const noResponse = totalFeedback - members;
+      const noResponse = members - totalFeedback;
       result = feedback.map((el) => {
         return el.feedbackResults.map((item) => item.answerId);
       });
@@ -37,9 +37,9 @@ class MeetingsController extends BaseController {
         getAnsMerged.filter((el) => el.id == item)
       );
       let removeArraySymbol = [].concat.apply([], matchedResults);
-      const total = removeArraySymbol.reduce((a, b) => ({
+      const total =removeArraySymbol.length > 0 && removeArraySymbol.reduce((a, b) => ({
         weightage: a.weightage + b.weightage,
-      }));
+      })) || 0;
       // count total and devide to total
       const avgMeetingScore = Math.trunc(
         total.weightage / removeArraySymbol.length

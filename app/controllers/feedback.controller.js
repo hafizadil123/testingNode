@@ -215,7 +215,7 @@ return [];
 
 
       res.json({ positiveReviews: positiveReviews.length,
-         negativeReviews: negativeReviews.length, meeting: meeting.length, avg: 0 });
+         negativeReviews: negativeReviews.length, totalMeeting: meeting.length, avg: 0 });
     // this.getResult(
     //   res,
     //   positiveReviews.length,
