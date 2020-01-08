@@ -3,7 +3,7 @@ import { reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplat
 import User from '../models/user.js';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
-const dateFormat = require('dateFormat');
+import dateFormat from 'dateFormat';
 
 export const sendRegistrationEmail = async (sendTo) =>{
     let transport = nodemailer.createTransport({
