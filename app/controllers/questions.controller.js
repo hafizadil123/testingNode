@@ -2,24 +2,49 @@ import BaseController from './base.controller';
 import Questions from '../models/questionAnswers';
 import Feedback from '../models/feedback';
 const mongoose = require('mongoose');
+import _ from 'lodash';
 class QuestionsController extends BaseController {
   whitelist = ['text'];
 
   // Middleware to populate post based on url param
   _populate = async (req, res, next) => {
-    const { id } = req.params;
+    const { meetingId } = req.query;
 
     try {
-      const post = await Questions.findById(id);
-
-      if (!post) {
-        const err = new Error('Post not found.');
-        err.status = 404;
-        return next(err);
+      const questionAnswers = await Questions.find({});
+    const feedback = await Feedback.find({ meetingId });
+    const obj = {};
+    feedback.forEach((feedbackItem) =>
+      feedbackItem.feedbackResults.forEach((feedbackResult) =>
+        questionAnswers.forEach((questionItem) =>
+          questionItem.answers.forEach((ansItem) => {
+            if (feedbackResult.answerId == ansItem.id) {
+              if ((feedbackResult.answerId) in obj) {
+                obj[feedbackResult.answerId] = obj[feedbackResult.answerId]+ 1;
+              } else {
+                obj[feedbackResult.answerId] = 1;
+              }
+            }
+          })
+        )
+      )
+    );
+    questionAnswers.forEach((item) =>
+    item.answers.forEach((answer) => {
+      if(answer.id in obj) {
+        answer['count'] = obj[answer.id];
       }
+    })
 
-      req.post = post;
-      next();
+  );
+
+  questionAnswers.forEach((item) =>{
+    const sortedArray = _.sortBy(item.answers, 'weightage').reverse();
+    item.answers = sortedArray;
+  }
+  );
+
+    res.json(questionAnswers);
     } catch (err) {
       err.status = err.name === 'CastError' ? 404 : 500;
       next(err);
@@ -68,6 +93,13 @@ class QuestionsController extends BaseController {
         answer['count'] = obj[answer.id];
       }
     })
+
+  );
+
+  questionAnswers.forEach((item) =>{
+    const sortedArray = _.sortBy(item.answers, 'weightage').reverse();
+    item.answers = sortedArray;
+  }
   );
 
     res.json(questionAnswers);

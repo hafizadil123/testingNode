@@ -50,7 +50,8 @@ routes.post('/create-questions', QuestionController.create);
 routes.get('/get-questions', QuestionController.fetch);
 routes.get('/get-feedback/:id', QuestionController._populate);
 
-
+// get-question-by-id
+routes.get('/get-question-by-id', QuestionController._populate);
 // Admin
 routes.get('/admin', accessControl('admin'), MetaController.index);
 

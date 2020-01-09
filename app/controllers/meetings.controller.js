@@ -23,8 +23,9 @@ class MeetingsController extends BaseController {
       const getAnswerArray = await QuestionAnswers.find({});
       getAnswerArray.map((item) => item.answer);
       const feedback = await Feedback.find({ meetingId });
-      const gooMeeting = feedback.map((item) => item.isGood === true);
-      const badMeeting = feedback.map((item) => item.isGood === false);
+     // console.log(feedback);
+      const gooMeeting = feedback.filter((item) => item.isGood ===true);
+      const badMeeting = feedback.filter((item) => item.isGood === false);
       const totalFeedback = feedback.length;
       const noResponse = members - totalFeedback;
       result = feedback.map((el) => {
@@ -36,10 +37,10 @@ class MeetingsController extends BaseController {
       const matchedResults = mergedResults.map((item) =>
         getAnsMerged.filter((el) => el.id == item)
       );
-      let removeArraySymbol = [].concat.apply([], matchedResults);
+      let removeArraySymbol = [].concat.apply([], matchedResults || []);
       const total =removeArraySymbol.length > 0 && removeArraySymbol.reduce((a, b) => ({
         weightage: a.weightage + b.weightage,
-      })) || 0;
+      }, 0)) || 0;
       // count total and devide to total
       const avgMeetingScore = Math.trunc(
         total.weightage / removeArraySymbol.length
@@ -108,8 +109,8 @@ class MeetingsController extends BaseController {
   getMembers = async (id) => {
     const meetingId = id;
     // const meetingId = '5dffad06a9d36afc546e5f6d';
-    const members = await Meeting.find({ _id: meetingId });
-    const memberCount = members.map((item) => item.invites.split(','));
+    const members = await Meeting.findOne({ _id: meetingId });
+    const memberCount = members.invites.split(',');
     const feedback = await Feedback.find({ meetingId: meetingId });
     const membersFeedback = {
       members: memberCount.length,
