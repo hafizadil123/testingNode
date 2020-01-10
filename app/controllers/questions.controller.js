@@ -39,7 +39,7 @@ class QuestionsController extends BaseController {
   );
 
   questionAnswers.forEach((item) =>{
-    const sortedArray = _.sortBy(item.answers, 'weightage').reverse();
+    const sortedArray = _.sortBy(item.answers, 'weightage');
     item.answers = sortedArray;
   }
   );
@@ -97,7 +97,7 @@ class QuestionsController extends BaseController {
   );
 
   questionAnswers.forEach((item) =>{
-    const sortedArray = _.sortBy(item.answers, 'weightage').reverse();
+    const sortedArray = _.sortBy(item.answers, 'weightage');
     item.answers = sortedArray;
   }
   );
