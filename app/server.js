@@ -43,7 +43,8 @@ cron.schedule('* * * * *', () => {
   events();
   sendFeedbackEmailsToInvites();
 });
-app.listen(Constants.port, () => {
+
+let server = app.listen(Constants.port, () => {
   // eslint-disable-next-line no-console
   console.log(`
     Port: ${Constants.port}
@@ -51,4 +52,11 @@ app.listen(Constants.port, () => {
   `);
 });
 
+// attach app server with socket app.io = io now available through out the application
+let io = require('socket.io').listen(server);
+io.on('connection', function(socket) {
+  //  set socket id initially
+  console.log('connected react application');
+});
+app.io = io;
 export default app;
