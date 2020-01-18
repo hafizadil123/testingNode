@@ -53,6 +53,7 @@
     "node-cron": "^2.0.3",
     "nodemailer": "^6.4.2",
     "nodemon": "^2.0.2",
+    "socket.io": "^2.3.0",
     "util": "^0.12.1"
   },
   "devDependencies": {
