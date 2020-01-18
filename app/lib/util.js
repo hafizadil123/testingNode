@@ -79,7 +79,7 @@ const message = {
   from: 'havea@goodmeeting.today', // Sender address
   to: sendTo, // List of recipients
   subject: 'Good Meeting Feedbacks', // Subject line
-  html: feedbackEmailTemplate(meetingId, sendTo, inviteId, userName, updatedCurrentDate, message.subject),
+  html: feedbackEmailTemplate(meetingId, sendTo, inviteId, userName, updatedCurrentDate, 'Good Meeting Feedback'),
 };
 transport.sendMail(message, function(err, info) {
   if (err) {

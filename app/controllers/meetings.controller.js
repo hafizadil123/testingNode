@@ -1,3 +1,4 @@
+/* eslint-disable prefer-spread */
 import BaseController from './base.controller';
 import Meeting from '../models/meetings';
 import Invite from '../models/invites';
@@ -38,11 +39,11 @@ class MeetingsController extends BaseController {
         getAnsMerged.filter((el) => el.id == item)
       );
       let removeArraySymbol = [].concat.apply([], matchedResults);
-      const total =removeArraySymbol.length > 0 && removeArraySymbol.reduce((a, b) => ({
-        weightage: a.weightage + b.weightage,
-      }, 0)) || 0;
+      let total = removeArraySymbol.length > 0 ? removeArraySymbol.reduce(function(accumulator, currentValue) {
+        return accumulator + currentValue.weightage;
+    }, 0) : 0;
       // count total and devide to total
-      const avgMeetingScore = removeArraySymbol.length > 0 ? Math.trunc(
+      const avgMeetingScore = total !== 0 ? Math.trunc(
         total / removeArraySymbol.length
       ) : 0;
       // res.json(mergedResults);
