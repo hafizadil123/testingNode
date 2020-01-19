@@ -6,14 +6,13 @@ import Meeting from '../models/meetings';
 import dateFormat from 'dateformat';
 
 export const sendRegistrationEmail = async(sendTo) =>{
-    let transport = nodemailer.createTransport({
-      host: 'smtp.mailtrap.io',
-      port: 2525,
-      auth: {
-         user: 'd7f0aac7250977',
-         pass: '3df80a5caac59e',
-      },
-  });
+  let transport = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+       user: 'havea@goodmeeting.today',
+       pass: 'S4v3T1m3',
+    },
+});
   const message = {
     from: 'havea@goodmeeting.today', // Sender address
     to: sendTo, // List of recipients
@@ -32,12 +31,11 @@ transport.sendMail(message, function(err, info) {
   export const forgotPasswordEmail = async(user) => {
       const updateUrl = 'http://18.219.243.112/update-password';
       const userId = user._id;
-    let transport = nodemailer.createTransport({
-        host: 'smtp.mailtrap.io',
-        port: 2525,
+      let transport = nodemailer.createTransport({
+        service: 'Gmail',
         auth: {
-           user: 'd7f0aac7250977',
-           pass: '3df80a5caac59e',
+           user: 'havea@goodmeeting.today',
+           pass: 'S4v3T1m3',
         },
     });
     const message = {
@@ -63,24 +61,23 @@ export const findUserIdByEmail = async(email) => {
   return user._id;
 }
 ;
-const sendFeedbackMail = async(sendTo, inviteId, updatedCurrentDate) =>{
+const sendFeedbackMail = async(sendTo, inviteId, updatedCurrentDate, subject, fullName) =>{
   let transport = nodemailer.createTransport({
-    host: 'smtp.mailtrap.io',
-    port: 2525,
+    service: 'Gmail',
     auth: {
-       user: 'd7f0aac7250977',
-       pass: '3df80a5caac59e',
+       user: 'havea@goodmeeting.today',
+       pass: 'S4v3T1m3',
     },
 });
 const InviteeObject = await Invites.findOne({ _id: inviteId });
 const meetingId = InviteeObject.meetingId;
-const userName = sendTo.split('@')[0];
 const message = {
   from: 'havea@goodmeeting.today', // Sender address
   to: sendTo, // List of recipients
   subject: 'Good Meeting Feedbacks', // Subject line
-  html: feedbackEmailTemplate(meetingId, sendTo, inviteId, userName, updatedCurrentDate, 'Good Meeting Feedback'),
+  html: feedbackEmailTemplate(meetingId, sendTo, inviteId, fullName, updatedCurrentDate, subject),
 };
+
 transport.sendMail(message, function(err, info) {
   if (err) {
    console.log('Error', err);
@@ -95,9 +92,10 @@ export const sendFeedbackEmailsToInvites = async() =>{
    let updatedCurrentDate = dateFormat(CurrentDate, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
   invites.map((item) => {
     if(!item.isEmailSent) {
-        Meeting.findOne({ _id: item.meetingId }).then((meeting) => {
+        Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
           if(updatedCurrentDate >= meeting.dateEnd) {
-            sendFeedbackMail(item.invitesEmail, item._id, updatedCurrentDate);
+            let subject = meeting.subject[0] || 'Good Meetings';
+            sendFeedbackMail(item.invitesEmail, item._id, updatedCurrentDate, subject, meeting._user.fullName);
             item.isEmailSent = true;
             item.save();
           } else {
