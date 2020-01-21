@@ -1,3 +1,4 @@
+/* eslint-disable babel/new-cap */
   /* eslint-disable prefer-spread */
 /* eslint-disable no-undef */
 import BaseController from './base.controller';
@@ -5,8 +6,9 @@ import Feedback from '../models/feedback';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
 import QuestionAnswers from '../models/questionAnswers';
-class FeedbackController extends BaseController {
+const mongoose = require('mongoose');
 
+class FeedbackController extends BaseController {
   whitelist = [
     'text',
     'feedbackResults',
@@ -17,7 +19,7 @@ class FeedbackController extends BaseController {
   ];
 
    // Middleware to populate post based on url param
-  _populate = async (req, _res, next) => {
+  _populate = async(req, _res, next) => {
     const { id } = req.params;
 
     try {
@@ -37,7 +39,7 @@ class FeedbackController extends BaseController {
     }
   }
 
-  search = async (_req, res, next) => {
+  search = async(_req, res, next) => {
     try {
       const posts =
         await Feedback.find({})
@@ -61,7 +63,7 @@ class FeedbackController extends BaseController {
    * req.user is populated by middleware in routes.js
    */
 
-  create = async (req, res, next) => {
+  create = async(req, res, next) => {
     const params = this.filterParams(req.body, this.whitelist);
     const isAlreadyExist = await Feedback.findOne({ inviteeId: req.body.inviteeId });
     if(isAlreadyExist) {
@@ -89,7 +91,7 @@ class FeedbackController extends BaseController {
           if (userMeetingFeedback.length === 0) {
             return avg;
           }
-          // this result contains all answers object of meeting for specific user, 
+          // this result contains all answers object of meeting for specific user,
         result = userMeetingFeedback.map((el) => {
         return el.feedbackResults.map((item) => item.answerId);
           });
@@ -110,7 +112,7 @@ class FeedbackController extends BaseController {
        });
   }
 
-   getResult = async (res, positiveReviews, negativeReviews, meeting, userId) => {
+   getResult = async(res, positiveReviews, negativeReviews, meeting, userId) => {
     const getAnswerArray = await QuestionAnswers.find({});
     getAnswerArray.map((item) => item.answer);
 
@@ -121,7 +123,7 @@ class FeedbackController extends BaseController {
   }
 
 
-  feedbackStats = async (req, res, _next) => {
+  feedbackStats = async(req, res, _next) => {
     const positiveReviews = await Feedback.find({ isGood: true });
     const negativeReviews = await Feedback.find({ isGood: false });
     const meeting = await Meeting.find({
@@ -129,12 +131,148 @@ class FeedbackController extends BaseController {
         $gte: new Date(new Date() - 7 * 60 * 60 * 24 * 1000),
     },
     });
-    const userId = req.query.userId;
+    const userId = mongoose.Types.ObjectId(req.query.userId);
     // get user meetings with Id
 
-  this.getResult(res, positiveReviews.length, negativeReviews.length, meeting.length, userId);
+
+    const avg = await Meeting.
+    aggregate([
+      { '$match': { '_user': userId } },
+      {
+          '$lookup': {
+              'from': 'feedbacks',
+              'let': { 'meeting_id': '$_id' },
+              'pipeline': [
+                  {
+                      '$match': {
+                          '$expr': {
+                              '$eq': ['$meetingId', '$$meeting_id'],
+                          },
+                      },
+                  },
+                  { '$unwind': { 'path': '$feedbackResults' } },
+                  {
+                      '$project': {
+                          'question_id': {
+                              '$toObjectId': '$feedbackResults.questionId',
+                          },
+                          'answer_id': {
+                              '$toObjectId': '$feedbackResults.answerId',
+                          },
+                          'isGood': '$isGood',
+                      },
+                  },
+                  {
+                      '$lookup': {
+                          'from': 'questionanswers',
+                          'localField': 'question_id',
+                          'foreignField': '_id',
+                          'as': 'qa_data',
+                      },
+                  },
+                  { '$unwind': { 'path': '$qa_data' } },
+                  {
+                      '$project': {
+                          'answer_data': {
+                              '$filter': {
+                                  input: '$qa_data.answers',
+                                  as: 'item',
+                                  cond: { $eq: ['$$item.id', '$answer_id'] },
+                              },
+                          },
+                          'isGood': '$isGood',
+                      },
+                  },
+                  { '$unwind': { 'path': '$answer_data' } },
+                  {
+                      '$group': {
+                          '_id': '',
+                          'weightage': { '$avg': '$answer_data.weightage' },
+                          'overall_rating': {
+                              '$addToSet': '$isGood',
+                          },
+                      },
+                  },
+              ],
+              'as': 'feedback_data',
+          },
+      },
+      {
+          '$unwind': { 'path': '$feedback_data', 'preserveNullAndEmptyArrays': true },
+      },
+      {
+          '$group': {
+              '_id': '',
+              'averageWeightage': { '$avg': '$feedback_data.weightage' },
+              'overall_rating': { '$addToSet': '$feedback_data.overall_rating' },
+              'total_meetings': { '$push': '$createdAt' },
+          },
+      },
+      {
+          '$project': {
+              '_id': false,
+              'averageWeightage': true,
+              'overall_rating': true,
+              'total_meetings': true,
+          },
+      },
+      { '$unwind': { 'path': '$overall_rating' } },
+      {
+          '$project': {
+              'averageWeightage': true,
+              'totalMeetings': {
+                  '$size': {
+                      '$filter': {
+                          'input': '$total_meetings',
+                          'as': 'input',
+                          'cond': { '$and': [{ '$gte': ['$$input', new Date(new Date() - 7 * 60 * 60 * 24 * 1000)] }] },
+                      },
+                  },
+              },
+              'positiveReviews': {
+                  '$size': {
+                      '$filter': {
+                          'input': '$overall_rating',
+                          'as': 'input',
+                          'cond': { '$and': [{ '$eq': ['$$input', true] }] },
+                      },
+                  },
+              },
+              'negativeReviews': {
+                  '$size': {
+                      '$filter': {
+                          'input': '$overall_rating',
+                          'as': 'input',
+                          'cond': { '$and': [{ '$eq': ['$$input', false] }] },
+                      },
+                  },
+              },
+          },
+      },
+      {
+          '$group': {
+              '_id': '$averageWeightage',
+              'positiveReviews': { '$sum': '$positiveReviews' },
+              'negativeReviews': { '$sum': '$negativeReviews' },
+              'totalMeetings': { '$first': '$totalMeetings' },
+          },
+      },
+      {
+          '$project': {
+              '_id': false,
+              'averageWeightage': '$_id',
+              'positiveReviews': true,
+              'negativeReviews': true,
+              'totalMeetings': true,
+          },
+      },
+  ]);
+
+  res.json({ positiveReviews: avg[0].positiveReviews,
+    negativeReviews: avg[0].negativeReviews, avgScore: avg[0].averageWeightage.toFixed(0), totalMeeting: avg[0].totalMeetings });
+  // this.getResult(res, positiveReviews.length, negativeReviews.length, meeting.length, userId);
   }
-  delete = async (req, res, next) => {
+  delete = async(req, res, next) => {
     /**
      * Ensure the user attempting to delete the post owns the post
      *

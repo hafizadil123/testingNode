@@ -46,7 +46,7 @@ const environmentConfigs = {
   development: {
     mongo: {
       uri: process.env.MONGO_URI ||
-      'mongodb://adil:cacadil123@ds263837.mlab.com:63837/good-meeting',
+      'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting',
     },
     security: {
       saltRounds: 4,
@@ -56,7 +56,7 @@ const environmentConfigs = {
     port: 5678,
     mongo: {
       uri: process.env.MONGO_URI ||
-      'mongodb://adil:cacadil123@ds263837.mlab.com:63837/good-meeting',
+      'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting',
     },
     security: {
       saltRounds: 4,
