@@ -49,7 +49,8 @@ routes.get('/get-feedback-stats/', FeedbackController.feedbackStats);
 routes.post('/create-questions', QuestionController.create);
 routes.get('/get-questions', QuestionController.fetch);
 routes.get('/get-feedback/:id', QuestionController._populate);
-
+routes.get('/get-summary', QuestionController.getSummary);
+routes.get('/get-stats-by-user-id', QuestionController.getStatsQuestion);
 // get-question-by-id
 routes.get('/get-question-by-id', QuestionController._populate);
 // Admin
