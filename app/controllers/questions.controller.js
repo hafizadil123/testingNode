@@ -74,39 +74,38 @@ class QuestionsController extends BaseController {
     // const userMeetings = await Meeting.find({ _user: userId });
     const questionAnswers = await Questions.find({});
     // console.log('userMeetings', userMeetings);
-    const feedback = await Feedback.find({});
-    const obj = {};
-    feedback.forEach((feedbackItem) =>
-      feedbackItem.feedbackResults.forEach((feedbackResult) =>
-        questionAnswers.forEach((questionItem) =>
-          questionItem.answers.forEach((ansItem) => {
-            if (feedbackResult.answerId == ansItem.id) {
-              if ((feedbackResult.answerId) in obj) {
-                obj[feedbackResult.answerId] = obj[feedbackResult.answerId]+ 1;
-              } else {
-                obj[feedbackResult.answerId] = 1;
-              }
-            }
-          })
-        )
-      )
-    );
-    questionAnswers.forEach((item) =>
-    item.answers.forEach((answer) => {
-      if(answer.id in obj) {
-        answer['count'] = obj[answer.id];
-      }
-    })
+    // const feedback = await Feedback.find({});
+    // const obj = {};
+  //   feedback.forEach((feedbackItem) =>
+  //     feedbackItem.feedbackResults.forEach((feedbackResult) =>
+  //       questionAnswers.forEach((questionItem) =>
+  //         questionItem.answers.forEach((ansItem) => {
+  //           if (feedbackResult.answerId == ansItem.id) {
+  //             if ((feedbackResult.answerId) in obj) {
+  //               obj[feedbackResult.answerId] = obj[feedbackResult.answerId]+ 1;
+  //             } else {
+  //               obj[feedbackResult.answerId] = 1;
+  //             }
+  //           }
+  //         })
+  //       )
+  //     )
+  //   );
+  //   questionAnswers.forEach((item) =>
+  //   item.answers.forEach((answer) => {
+  //     if(answer.id in obj) {
+  //       answer['count'] = obj[answer.id];
+  //     }
+  //   })
 
-  );
+  // );
 
   questionAnswers.forEach((item) =>{
     const sortedArray = _.sortBy(item.answers, 'weightage');
     item.answers = sortedArray;
   }
   );
-
-    res.json(questionAnswers);
+   return questionAnswers;
   };
   /**
    * req.user is populated by middleware in routes.js
@@ -276,114 +275,141 @@ class QuestionsController extends BaseController {
   };
 
   getStatsQuestion = async(req, res) => {
-       const result = await Questions.aggregate([
-      {
-          $lookup: {
-              from: 'feedbacks',
-              let: { 'question_id': '$_id' },
-              pipeline: [
-                  {
-                      '$unwind': { path: '$feedbackResults' },
-                  },
-                  {
-                      '$project': {
-                          '_id': false,
-                          'answer_id': { '$toObjectId': '$feedbackResults.answerId' },
-                          'question_id': { '$toObjectId': '$feedbackResults.questionId' },
-                      },
-                  },
-                  {
-                      '$match': {
-                          '$expr': {
-                              '$and': [
-                                  { $eq: ['$question_id', '$$question_id'] },
-                              ],
-                          },
-                      },
-                  },
-              ],
-              as: 'feedbacks',
-          },
-      },
-      {
-          '$unwind': { path: '$answers' },
-      },
-      {
-          '$project': {
-              'answerCount': {
-                  '$size': {
-                      '$filter': {
-                          'input': '$feedbacks',
-                          'as': 'feedback',
-                          'cond': {
-                              '$eq': ['$$feedback.answer_id', '$answers.id'],
-                          },
-                      },
-                  },
-              },
-              'answer_id': '$answers.id',
-              'answerText': '$answers.answer',
-              'answerWeightage': '$answers.weightage',
-              'questionText': '$question',
-          },
-      },
-      {
-          '$group': {
-              '_id': '$_id',
-              'questionText': { '$first': '$questionText' },
-              'answers': {
-                  '$push': {
-                      'answerId': '$answer_id',
-                      'answerText': '$answerText',
-                      'answerCount': '$answerCount',
-                      'weightage': '$answerWeightage',
-                  },
-              },
-              'totalCount': { '$sum': '$answerCount' },
-              'questionAnswered': { '$push': { '_id': '$_id' } },
-          },
-      },
-      {
-          '$unwind': { path: '$answers' },
-      },
-      {
-          '$sort': {
-              'answers.weightage': -1,
-          },
-      },
-      {
-          '$group': {
-              '_id': '$_id',
-              'questionText': { '$first': '$questionText' },
-              'answers': {
-                  '$push': {
-                      'answerId': '$answers.answerId',
-                      'answerText': '$answers.answerText',
-                      'weightage': '$answers.weightage',
-                      'answerCount': '$answers.answerCount',
-                      'percentage': {
-                          '$cond': [
-                              { '$eq': ['$totalCount', 0] },
-                              0,
-                              {
-                                  '$multiply': [
-                                      { '$divide': ['$answers.answerCount', '$totalCount'] },
-                                      100,
-                                  ],
-                              },
-                          ],
-                      },
-                  },
-              },
-          },
-      },
-      {
-          '$sort': {
-              'answers.weightage': -1,
-          },
-      },
-  ]);
-  res.json(result);
+    const userId = mongoose.Types.ObjectId(req.query.userId);
+    try{
+      const result = await Questions.aggregate([
+        {
+        $lookup: {
+        from: 'feedbacks',
+        let: { 'question_id': '$_id' },
+        pipeline: [
+        {
+        '$unwind': { path: '$feedbackResults' },
+        },
+        {
+        '$project': {
+        '_id': false,
+        'answer_id': { '$toObjectId': '$feedbackResults.answerId' },
+        'question_id': { '$toObjectId': '$feedbackResults.questionId' },
+        'meeting_id': '$meetingId',
+        },
+        },
+        {
+        '$lookup':
+        {
+        'from': 'meetings',
+        'localField': 'meeting_id',
+        'foreignField': '_id',
+        'as': 'meetings',
+        },
+        },
+        {
+        '$unwind': { path: '$meetings' },
+        },
+        {
+        '$match': {
+        '$expr': {
+        '$and': [
+        { $eq: ['$question_id', '$$question_id'] },
+        { $eq: ['$meetings._user', userId] },
+        ],
+        },
+        },
+        },
+        ],
+        as: 'feedbacks',
+        },
+        },
+        {
+        '$unwind': { path: '$answers' },
+        },
+        {
+        '$project': {
+        'answerCount': {
+        '$size': {
+        '$filter': {
+        'input': '$feedbacks',
+        'as': 'feedback',
+        'cond': {
+        '$eq': ['$$feedback.answer_id', '$answers.id'],
+        },
+        },
+        },
+        },
+        'answer_id': '$answers.id',
+        'answerText': '$answers.answer',
+        'answerWeightage': '$answers.weightage',
+        'questionText': '$question',
+        },
+        },
+        {
+        '$group': {
+        '_id': '$_id',
+        'questionText': { '$first': '$questionText' },
+        'answers': {
+        '$push': {
+        'answerId': '$answer_id',
+        'answerText': '$answerText',
+        'answerCount': '$answerCount',
+        'weightage': '$answerWeightage',
+        },
+        },
+        'totalCount': { '$sum': '$answerCount' },
+        'questionAnswered': { '$push': { '_id': '$_id' } },
+        },
+        },
+        {
+        '$unwind': { path: '$answers' },
+        },
+        {
+        '$sort': {
+        'answers.weightage': -1,
+        },
+        },
+        {
+        '$group': {
+        '_id': '$_id',
+        'question': { '$first': '$questionText' },
+        'answers': {
+        '$push': {
+        'id': '$answers.answerId',
+        'answer': '$answers.answerText',
+        'weightage': '$answers.weightage',
+        'count': '$answers.answerCount',
+        'percentage': {
+        '$cond': [
+        { '$eq': ['$totalCount', 0] },
+        0,
+        {
+        '$multiply': [
+        { '$divide': ['$answers.answerCount', '$totalCount'] },
+        100,
+        ],
+        },
+        ],
+        },
+        },
+        },
+        },
+        },
+        {
+        '$sort': {
+        'answers.weightage': -1,
+        },
+        },
+        ]);
+    res.json(result);
+    }catch(err) {
+      console.log('err', err);
+    }
+
+    // console.log('sdfjdsalkfjkldsajfldsakf', result);
+    // if(result.length > 0) {
+    //   res.json(result);
+    // } else {
+    //   const result = await this.fetch();
+    //   res.json(result);
+    // }
   }
 
 

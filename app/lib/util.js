@@ -90,19 +90,22 @@ export const sendFeedbackEmailsToInvites = async() =>{
   const invites = await Invites.find({});
   let CurrentDate = new Date();
    let updatedCurrentDate = dateFormat(CurrentDate, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
+   const todayData = updatedCurrentDate.split(',')[1].concat(updatedCurrentDate.split(',')[2]).concat(updatedCurrentDate.split(',')[3]);
+
   invites.map((item) => {
     if(!item.isEmailSent) {
         Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
-          if(updatedCurrentDate >= meeting.dateEnd) {
+          const meetingData = meeting.dateEnd.split(',')[1].concat(meeting.dateEnd.split(',')[2]).concat(meeting.dateEnd.split(',')[3]);
+          if(todayData >= meetingData) {
             let subject = meeting.subject[0] || 'Good Meetings';
             sendFeedbackMail(item.invitesEmail, item._id, updatedCurrentDate, subject, meeting._user.fullName);
             item.isEmailSent = true;
             item.save();
           } else {
-            console.log('Meeting time not end till yet');
+            console.log('Meeting time not end till yet data outside');
           }
         });
     }
   });
-  console.log('Meeting time not end till yet');
+  console.log('Meeting time not end till yet outside');
 };
