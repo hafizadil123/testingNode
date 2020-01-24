@@ -73,39 +73,38 @@ class QuestionsController extends BaseController {
     // const userId = "5e14c1ff2824c72182d0417e";
     // const userMeetings = await Meeting.find({ _user: userId });
     const questionAnswers = await Questions.find({});
-    // console.log('userMeetings', userMeetings);
-    // const feedback = await Feedback.find({});
-    // const obj = {};
-  //   feedback.forEach((feedbackItem) =>
-  //     feedbackItem.feedbackResults.forEach((feedbackResult) =>
-  //       questionAnswers.forEach((questionItem) =>
-  //         questionItem.answers.forEach((ansItem) => {
-  //           if (feedbackResult.answerId == ansItem.id) {
-  //             if ((feedbackResult.answerId) in obj) {
-  //               obj[feedbackResult.answerId] = obj[feedbackResult.answerId]+ 1;
-  //             } else {
-  //               obj[feedbackResult.answerId] = 1;
-  //             }
-  //           }
-  //         })
-  //       )
-  //     )
-  //   );
-  //   questionAnswers.forEach((item) =>
-  //   item.answers.forEach((answer) => {
-  //     if(answer.id in obj) {
-  //       answer['count'] = obj[answer.id];
-  //     }
-  //   })
+    const feedback = await Feedback.find({});
+    const obj = {};
+    feedback.forEach((feedbackItem) =>
+      feedbackItem.feedbackResults.forEach((feedbackResult) =>
+        questionAnswers.forEach((questionItem) =>
+          questionItem.answers.forEach((ansItem) => {
+            if (feedbackResult.answerId == ansItem.id) {
+              if ((feedbackResult.answerId) in obj) {
+                obj[feedbackResult.answerId] = obj[feedbackResult.answerId]+ 1;
+              } else {
+                obj[feedbackResult.answerId] = 1;
+              }
+            }
+          })
+        )
+      )
+    );
+    questionAnswers.forEach((item) =>
+    item.answers.forEach((answer) => {
+      if(answer.id in obj) {
+        answer['count'] = obj[answer.id];
+      }
+    })
 
-  // );
+  );
 
   questionAnswers.forEach((item) =>{
     const sortedArray = _.sortBy(item.answers, 'weightage');
     item.answers = sortedArray;
   }
   );
-   return questionAnswers;
+   res.json(questionAnswers);
   };
   /**
    * req.user is populated by middleware in routes.js
