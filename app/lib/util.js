@@ -96,7 +96,9 @@ export const sendFeedbackEmailsToInvites = async() =>{
     if(!item.isEmailSent) {
         Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
           const meetingData = meeting.dateEnd.split(',')[1].concat(meeting.dateEnd.split(',')[2]).concat(meeting.dateEnd.split(',')[3]);
-          if(todayData >= meetingData) {
+         const updatedMeetingDate = new Date(Date.parse(meetingData));
+         const updatedTodayDate = new Date(Date.parse(todayData));
+          if(updatedTodayDate >= updatedMeetingDate) {
             let subject = meeting.subject[0] || 'Good Meetings';
             sendFeedbackMail(item.invitesEmail, item._id, updatedCurrentDate, subject, meeting._user.fullName);
             item.isEmailSent = true;
