@@ -29,7 +29,7 @@ transport.sendMail(message, function(err, info) {
   };
 
   export const forgotPasswordEmail = async(user) => {
-      const updateUrl = 'http://18.219.243.112/update-password';
+      const updateUrl = 'https://goodmeeting.today/update-password';
       const userId = user._id;
       let transport = nodemailer.createTransport({
         service: 'Gmail',

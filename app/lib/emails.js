@@ -195,7 +195,7 @@ export const forgotPasswordTemplate = (updateUrl, userId) => (`<!DOCTYPE html>
                                             
                                             <tr>
                                                 <td>
-                                                    <img style="display:block;margin:0 auto;" src="http://goodmeeting.today/img/logo.png" width='200' alt="">
+                                                    <img style="display:block;margin:0 auto;" src="https://goodmeeting.today/img/logo.png" width='200' alt="">
                                                     
                                                     <h2 style="color:#5e5e5e;font-size:18px;text-align:center;font-weight:bolder; margin-top: 70px;">You told us you forgot password. If you really did, Click here to choose a new one. </h2>
                                                     <ul style="margin: 50px 0px;text-align: center;">
@@ -228,7 +228,7 @@ export const forgotPasswordTemplate = (updateUrl, userId) => (`<!DOCTYPE html>
 
 </div>
 </body>
-</html>`)
+</html>`);
 export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userName, currentData, subject) => ( `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -337,11 +337,11 @@ export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userNa
                                                     <ul style="margin: 50px 0px;text-align: center;">
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #625675;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;margin-right: 15px;"
-                                                               href='http://18.219.243.112/feedback-form?isGood=1&meetingId=${meetingId}&email=${inviteEmail}&invitee=${inviteName}'>Yes, on the whole it was good</a>
+                                                               href='https://goodmeeting.today/feedback-form?isGood=1&meetingId=${meetingId}&email=${inviteEmail}&invitee=${inviteName}'>Yes, on the whole it was good</a>
                                                         </li>
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #E15752;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;"
-                                                               href="http://18.219.243.112/feedback-form?isGood=0&meetingId=${meetingId}&email=${inviteEmail}&invitee=${inviteName}">No, overall it wasn’t great</a>
+                                                               href="https://goodmeeting.today/feedback-form?isGood=0&meetingId=${meetingId}&email=${inviteEmail}&invitee=${inviteName}">No, overall it wasn’t great</a>
                                                         </li>
                                                     </ul>
                                                     <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
@@ -352,7 +352,7 @@ export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userNa
 														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Thankfully, {Name} uses Good Meeting Today to get feedback on meetings and would like to know what you thought of the meeting with them. </p>
 
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Want to ensure you get the most out of meetings? <a target=_blank href="http://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Want to ensure you get the most out of meetings? <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
                                                 </td>
                                             </tr>
 
