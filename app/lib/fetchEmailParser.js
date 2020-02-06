@@ -31,12 +31,13 @@ export const events = async (req, res) => {
   imap.connect();
   let eventsDta = [];
   function execute() {
+    let flag = 0;
     imap.openBox('INBOX', false, function(err, mailBox) {
       if (err) {
         console.error(err);
         return;
       }
-      imap.search(['UNSEEN', ['SUBJECT', 'Invitation:']], function(
+      imap.search(['UNSEEN'], function(
         err,
         results
       ) {
@@ -67,15 +68,16 @@ export const events = async (req, res) => {
               let buffer = eventsDta[x].buffer;
               await simpleParser(buffer)
                 .then(function(mail_object) {
+                  if(!mail_object.attachments[0]) throw new Error('its not event');
                   let fileData = mail_object.attachments[0].content
                     .toString('utf8')
                     .replace(/\s/g, '');
                   let allAttendees = fileData.match(
-                    new RegExp('MAILTO:' + '(.*?)' + 'ATTENDEE', 'gm')
+                    new RegExp('mailto:' + '(.*?)' + 'ATTENDEE', 'gm')
                   );
                   allAttendees.push(
                     fileData.substring(
-                      fileData.lastIndexOf('MAILTO:'),
+                      fileData.lastIndexOf('mailto:'),
                       fileData.lastIndexOf('DESCRIPTION;')
                     )
                   );
@@ -124,10 +126,11 @@ export const events = async (req, res) => {
                   };
                 })
                 .catch(function(err) {
+                  flag = 1;
                   console.log('An error occurred:', err.message);
                 });
             }
-            if (x == eventsDta.length - 1) {
+            if (x == eventsDta.length - 1 && flag !== 1) {
                const emailFetchedData = eventsDta.map(async (item) => {
               const userId = await findUserId(item.Organizer);
                 if (userId) {
