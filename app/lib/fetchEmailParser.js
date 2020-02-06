@@ -132,7 +132,8 @@ export const events = async (req, res) => {
             }
             if (x == eventsDta.length - 1 && flag !== 1) {
                const emailFetchedData = eventsDta.map(async (item) => {
-              const userId = await findUserId(item.Organizer);
+              const organizer = item.Organizer.split(':')[1] !== undefined ? item.Organizer.split(':')[1] : item.Organizer;
+              const userId = await findUserId(organizer);
                 if (userId) {
                     const mapData = {
                         subject: item.Subject,
