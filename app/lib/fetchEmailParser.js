@@ -19,7 +19,7 @@ let imapConfig = {
   tls: true,
 };
 
-export const events = async (req, res) => {
+export const events = async(req, res) => {
   let imap = new Imap(imapConfig);
   Promise.promisifyAll(imap);
 
@@ -131,18 +131,18 @@ export const events = async (req, res) => {
                 });
             }
             if (x == eventsDta.length - 1 && flag !== 1) {
-               const emailFetchedData = eventsDta.map(async (item) => {
+               const emailFetchedData = eventsDta.map(async(item) => {
               const organizer = item.Organizer.replace('mailto:', '');
               const userId = await findUserId(organizer);
                 if (userId) {
                     const mapData = {
                         subject: item.Subject,
                         organizer: organizer,
-                        invites: item.Invites.replace('mailto:', '').replace('mailto:', ''),
+                        invites: item.Invites.split('mailto:').join(''),
                         dateStart: item.DateStart instanceof Date && !isNaN(item.DateStart) ?
-                        dateFormat(item.DateStart, 'dddd, mmmm dS, yyyy, h:MM:ss TT') : '',
+                        dateFormat(item.DateStart, 'dddd, mmmm dS, yyyy, h:MM:ss TT') : dateFormat(Date(item.DateStart), 'dddd, mmmm dS, yyyy, h:MM:ss TT'),
                         dateEnd: item.DateEnd instanceof Date && !isNaN(item.DateEnd) ?
-                        dateFormat(item.DateEnd, 'dddd, mmmm dS, yyyy, h:MM:ss TT'): '',
+                        dateFormat(item.DateEnd, 'dddd, mmmm dS, yyyy, h:MM:ss TT'): dateFormat(Date(item.DateEnd), 'dddd, mmmm dS, yyyy, h:MM:ss TT'),
                         location: item.Location,
                         _user: userId,
                     };
@@ -164,7 +164,7 @@ export const events = async (req, res) => {
     const id = findUserIdByEmail(item);
     return id;
   };
-  const updateDataInModels = async (data) =>{
+  const updateDataInModels = async(data) =>{
     const meetingsAdded = await data.save();
     const invitesArray = meetingsAdded.invites.split(',');
   //  const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
