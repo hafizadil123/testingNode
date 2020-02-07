@@ -16,7 +16,7 @@ const MeetingSchema = new Schema({
   },
   dateStart: {
     type: String,
-    required: true,
+    default: Date.now,
   },
   dateEnd: {
     type: String,

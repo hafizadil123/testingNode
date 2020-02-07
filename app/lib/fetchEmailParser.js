@@ -132,13 +132,13 @@ export const events = async (req, res) => {
             }
             if (x == eventsDta.length - 1 && flag !== 1) {
                const emailFetchedData = eventsDta.map(async (item) => {
-              const organizer = item.Organizer.split(':')[1] !== undefined ? item.Organizer.split(':')[1] : item.Organizer;
+              const organizer = item.Organizer.replace('mailto:', '');
               const userId = await findUserId(organizer);
                 if (userId) {
                     const mapData = {
                         subject: item.Subject,
-                        organizer: item.Organizer,
-                        invites: item.Invites,
+                        organizer: organizer,
+                        invites: item.Invites.replace('mailto:', '').replace('mailto:', ''),
                         dateStart: item.DateStart instanceof Date && !isNaN(item.DateStart) ?
                         dateFormat(item.DateStart, 'dddd, mmmm dS, yyyy, h:MM:ss TT') : '',
                         dateEnd: item.DateEnd instanceof Date && !isNaN(item.DateEnd) ?
