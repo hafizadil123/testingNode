@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable max-len */
 import nodemailer from 'nodemailer';
 import { reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate } from './emails';
 import User from '../models/user.js';
@@ -90,13 +92,13 @@ export const sendFeedbackEmailsToInvites = async() =>{
   const invites = await Invites.find({});
   let CurrentDate = new Date();
    let updatedCurrentDate = dateFormat(CurrentDate, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
-   const todayData = updatedCurrentDate.split(',')[1].concat(updatedCurrentDate.split(',')[2]).concat(updatedCurrentDate.split(',')[3]);
+  // const todayData = updatedCurrentDate.split(',')[1].concat(updatedCurrentDate.split(',')[2]).concat(updatedCurrentDate.split(',')[3]);
 
-  invites.map((item) => {
+  invites.map(async(item) => {
     if(!item.isEmailSent) {
-        Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
-          const meetingData = meeting.dateEnd ? meeting.dateEnd.split(',')[1].concat(meeting.dateEnd.split(',')[2]).concat(meeting.dateEnd.split(',')[3]) : 0;
-          if(todayData >= meetingData) {
+       await Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
+          // const meetingData = meeting && meeting.dateEnd && meeting.dateEnd.split(',')[1].concat(meeting.dateEnd.split(',')[2]).concat(meeting.dateEnd.split(',')[3]);
+          if(meeting && compareDates(meeting.endDatWithoutEncoding)) {
             let subject = meeting.subject[0] || 'Good Meetings';
             sendFeedbackMail(item.invitesEmail, item._id, updatedCurrentDate, subject, meeting._user.fullName);
             item.isEmailSent = true;
@@ -109,3 +111,26 @@ export const sendFeedbackEmailsToInvites = async() =>{
   });
   console.log('Meeting time not end till yet outside');
 };
+export const formatedDate =(unformatedDate) => {
+  let year = unformatedDate.substring(0, 4);
+  let month = unformatedDate.substring(4, 6);
+  let day = unformatedDate.substring(6, 8);
+  let hour = unformatedDate.substring(9, 11);
+  let min = unformatedDate.substring(11, 13);
+  let sec = unformatedDate.substring(13, 15);
+  const eventDate = new Date(year +'-' + month+'-' + day+':' + ' '+(hour) + ':'+ min+ ':'+ sec);
+  return eventDate;
+};
+
+export const compareDates = (meetingDate = '') => {
+  const todayDat = new Date();
+ const meetingDateSplitting = meetingDate.split(' ');
+const meetingDateUpdated = meetingDateSplitting.length === 1 ? new Date((formatedDate(meetingDate))) : new Date(meetingDate);
+const currentDate = (todayDat);
+console.log( new Date((formatedDate(meetingDate))));
+if(currentDate > meetingDateUpdated) {
+   return true;
+} else {
+  return false;
+}
+ };

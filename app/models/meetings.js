@@ -25,6 +25,10 @@ const MeetingSchema = new Schema({
     type: String,
     default: null,
   },
+  endDatWithoutEncoding: {
+    type: String,
+    default: null,
+  },
    _user: { type: Schema.Types.ObjectId, ref: 'User' },
 }, {
   timestamps: true,

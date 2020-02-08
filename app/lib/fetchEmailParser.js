@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Imap from 'imap';
 Imap.inspect = require('util').inspect;
 let MailParser = require('mailparser').MailParser;
@@ -8,6 +9,7 @@ Promise.longStackTraces();
 import ical from 'cal-parser';
 import { findUserIdByEmail } from './util.js';
 import User from '../models/user';
+import { formatedDate } from './util';
 import Meetings from '../models/meetings';
 import Invites from '../models/invites.js';
 
@@ -140,10 +142,11 @@ export const events = async(req, res) => {
                         organizer: organizer,
                         invites: item.Invites.split('mailto:').join(''),
                         dateStart: item.DateStart instanceof Date && !isNaN(item.DateStart) ?
-                        dateFormat(item.DateStart, 'dddd, mmmm dS, yyyy, h:MM:ss TT') : dateFormat(Date(item.DateStart), 'dddd, mmmm dS, yyyy, h:MM:ss TT'),
+                        dateFormat(item.DateStart, 'dddd, mmmm dS, yyyy, h:MM:ss TT') : dateFormat(formatedDate(item.DateStart), 'dddd, mmmm dS, yyyy, h:MM:ss TT'),
                         dateEnd: item.DateEnd instanceof Date && !isNaN(item.DateEnd) ?
-                        dateFormat(item.DateEnd, 'dddd, mmmm dS, yyyy, h:MM:ss TT'): dateFormat(Date(item.DateEnd), 'dddd, mmmm dS, yyyy, h:MM:ss TT'),
+                        dateFormat(item.DateEnd, 'dddd, mmmm dS, yyyy, h:MM:ss TT'): dateFormat(formatedDate(item.DateEnd), 'dddd, mmmm dS, yyyy, h:MM:ss TT'),
                         location: item.Location,
+                        endDatWithoutEncoding: item.DateEnd,
                         _user: userId,
                     };
                    const updateMeetings = new Meetings({
