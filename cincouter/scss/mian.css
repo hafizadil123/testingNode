@@ -1,0 +1,818 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li {
+  padding: 0;
+  margin: 0px;
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* The custom-checkbox */
+.custom-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 0px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-weight: 400;
+  /* Hide the browser's default checkbox */
+  /* Create a custom checkbox */
+  /* On mouse-over, add a grey background color */
+  /* When the checkbox is checked, add a blue background */
+  /* Create the checkmark/indicator (hidden when not checked) */
+  /* Show the checkmark when checked */
+  /* Style the checkmark/indicator */
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background: none;
+  border: 1px solid #c9c9c9;
+  border-radius: 5px;
+}
+
+.custom-checkbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #ff4b56 !important;
+}
+
+.custom-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-checkbox .checkmark:after {
+  left: 8px;
+  top: 4px;
+  width: 7px;
+  height: 13px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* The ctm-radio */
+.ctm-radio {
+  display: block;
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 0px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Hide the browser's default radio button */
+  /* Create a custom radio button */
+  /* On mouse-over, add a grey background color */
+  /* When the radio button is checked, add a blue background */
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  /* Show the indicator (dot/circle) when checked */
+  /* Style the indicator (dot/circle) */
+}
+
+.ctm-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.ctm-radio .checkmark {
+  position: absolute;
+  top: 7px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border: 1px solid #c9c9c9;
+  border-radius: 50%;
+}
+
+.ctm-radio:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.ctm-radio input:checked ~ .checkmark {
+  background-color: #ff4b56 !important;
+}
+
+.ctm-radio .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.ctm-radio .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* @font-face kit by Fonts2u (https://fonts2u.com) */
+@font-face {
+  font-family: "Lovelo-Black";
+  src: url("../fonts/lovelo/Lovelo_Black.eot?") format("eot"), url("../fonts/lovelo/Lovelo_Black.woff") format("woff"), url("../fonts/lovelo/Lovelo_Black.ttf") format("truetype"), url("../fonts/lovelo/Lovelo_Black.svg#Lovelo-Black") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("../fonts/Helvetica.eot") format("embedded-opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.main-box {
+  background: url("../img/Pasted-Image.jpg") no-repeat center/cover;
+  height: 100vh;
+  overflow-y: auto;
+  background-attachment: fixed;
+}
+
+@media (max-width: 575px) {
+  .main-box {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+}
+
+.main-login-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding-bottom: 50px;
+}
+
+@media (max-width: 575px) {
+  .main-login-box {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}
+
+.login-des {
+  font-size: 20px;
+  color: #ff4b56 !important;
+  max-width: 464px;
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  margin-top: 200px;
+}
+
+@media (max-width: 575px) {
+  .login-des {
+    display: none;
+  }
+}
+
+.login-form-sec {
+  max-width: 521px;
+  width: 100%;
+}
+
+.caption-nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 16px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.caption-nav .item {
+  padding: 0px 3px;
+}
+
+.caption-nav .item .link {
+  background: #fff;
+  height: 20px;
+  width: 20px;
+  border-radius: 100px;
+  display: block;
+  border: 1px solid #000;
+}
+
+.caption-nav .item .link.active {
+  background: #ff4b56 !important;
+  height: 30px;
+  width: 30px;
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 30px;
+}
+
+.login-box h2 {
+  font-size: 18px !important;
+  color: #000;
+  text-transform: capitalize;
+}
+
+.login-box .rigister-heading {
+  font-size: 15px;
+}
+
+.login-box .socila-login {
+  margin-top: 72px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+@media (max-width: 575px) {
+  .login-box .socila-login {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin-top: 35px;
+  }
+}
+
+.login-box .socila-login .facbook-btn {
+  margin-bottom: 20px;
+}
+
+.login-box .socila-login .facbook-btn,
+.login-box .socila-login .google-btn {
+  height: 42px;
+  line-height: 42px;
+  width: 100%;
+  border-radius: 5px;
+  color: #fff;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  text-align: left;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  cursor: pointer;
+}
+
+.login-box .socila-login .facbook-btn span,
+.login-box .socila-login .google-btn span {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.login-box .socila-login .facbook-btn i,
+.login-box .socila-login .google-btn i {
+  font-size: 22px;
+  border-right: 1px solid rgba(0, 0, 0, 0.16);
+  padding: 10px;
+  height: 42px;
+  text-align: left;
+}
+
+.login-box .socila-login .facbook-btn {
+  background: #3b5999;
+}
+
+.login-box .socila-login .google-btn {
+  background: #e04934;
+}
+
+.login-box .or-login {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.login-box .or-login::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  background: #c9c9c9;
+  z-index: -1;
+}
+
+.login-box .or-login p {
+  color: #c9c9c9;
+  font-size: 15px;
+  background: #fff;
+  display: inline-block;
+  padding: 0px 15px;
+}
+
+.login-box .input-1 {
+  margin-bottom: 30px;
+}
+
+.login-box .input-1 label {
+  font-size: 20px;
+  color: #000;
+}
+
+.login-box .input-1 .input-field {
+  position: relative;
+}
+
+.login-box .input-1 .input-field .form-control {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #c9c9c9;
+  outline: none;
+  background: #fff;
+  padding-left: 55px;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 5px;
+}
+
+.login-box .input-1 .input-field .icon {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 46px;
+  line-height: 46px;
+  width: 48px;
+  text-align: center;
+  border-right: 2px solid #c9c9c9;
+  font-size: 20px;
+}
+
+.login-box .input-1 .input-field .icon img {
+  -webkit-transform: translateY(-3px);
+          transform: translateY(-3px);
+}
+
+.login-box .input-1 .input-field .eye-icon {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 46px;
+  line-height: 46px;
+  padding: 0px 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #858585;
+}
+
+.login-box .input-1.paswrod .input-field .form-control {
+  padding-right: 50px;
+}
+
+.login-box .input-1.not-icon .input-field .form-control {
+  padding: 0.375rem 0.75rem;
+}
+
+.login-box .login-btn {
+  height: 46px;
+  border-radius: 5px;
+  background: #a1e30f;
+  padding: 0px 56px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: #3f443d;
+  margin-top: 10px;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.login-box .login-btn:hover {
+  background: #ff4b56 !important;
+  color: #fff;
+}
+
+.login-box .accout-info {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  margin-top: 30px;
+}
+
+.login-box .accout-info-term {
+  font-size: 11px;
+  font-weight: 300;
+  color: #ccc;
+  margin-top: 30px;
+}
+
+.login-box .move-back-link {
+  font-size: 16px;
+  color: #3f443d;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.date-birtha {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (max-width: 575px) {
+  .date-birtha {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}
+
+.date-birtha .input-1 {
+  padding-right: 18px;
+}
+
+@media (max-width: 575px) {
+  .date-birtha .input-1 {
+    margin-bottom: 0;
+  }
+}
+
+.date-birtha .input-1 .input-field .form-control {
+  width: 70px !important;
+  height: 29px !important;
+  padding: 0 5px !important;
+}
+
+.date-birtha .select-age {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (max-width: 575px) {
+  .date-birtha .select-age {
+    margin-bottom: 30px;
+  }
+}
+
+.select-gender {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (max-width: 575px) {
+  .select-gender {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}
+
+.select-gender .heading {
+  margin-right: 30px;
+}
+
+@media (max-width: 575px) {
+  .select-gender .heading {
+    margin-bottom: 0px;
+  }
+}
+
+.select-gender .check-gender {
+  margin-right: 30px;
+}
+
+@media (max-width: 575px) {
+  .select-gender .check-gender {
+    margin-right: 15px;
+  }
+}
+
+.select-gender .gender-choose {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (max-width: 575px) {
+  .select-gender .gender-choose {
+    margin-bottom: 30px;
+  }
+}
+
+.select-gender-last-step .heading {
+  margin-right: 30px;
+}
+
+@media (max-width: 575px) {
+  .select-gender-last-step .heading {
+    margin-bottom: 0px;
+  }
+}
+
+.select-gender-last-step .check-gender {
+  margin-right: 30px;
+}
+
+@media (max-width: 575px) {
+  .select-gender-last-step .check-gender {
+    margin-right: 15px;
+  }
+}
+
+.select-gender-last-step .gender-choose {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (max-width: 575px) {
+  .select-gender-last-step .gender-choose {
+    margin-bottom: 30px;
+  }
+}
+
+.footer-link {
+  margin-top: 30px;
+}
+
+.footer-link ul {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.footer-link ul li a {
+  font-size: 14px;
+  color: #3f443d;
+}
+
+.pre-proporre {
+  text-align: center;
+}
+
+.pre-proporre h3 {
+  font-size: 15px;
+  color: #000;
+  font-weight: 500;
+  margin-top: 40px;
+  margin-bottom: 5px;
+}
+
+.pre-proporre a {
+  height: 42px;
+  width: 100%;
+  max-width: 420px;
+  background: #fd3a4a;
+  color: #fff;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-block;
+  padding: 0px 15px;
+  line-height: 42px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.pre-proporre a:hover {
+  text-decoration: none;
+  background: #a1e30f;
+}
+
+.pre-proporre2 {
+  text-align: center;
+}
+
+.pre-proporre2 h3 {
+  font-size: 15px;
+  color: #000;
+  font-weight: 500;
+  margin-top: 40px;
+  margin-bottom: 5px;
+}
+
+.pre-proporre2 a {
+  height: 42px;
+  width: 100%;
+  max-width: 420px;
+  background: none;
+  border: 1px solid #fd3a4a;
+  color: #000;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-block;
+  padding: 0px 15px;
+  line-height: 42px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.pre-proporre2 a:hover {
+  text-decoration: none;
+  background: #a1e30f;
+  color: #fff;
+}
+
+.accedi-da {
+  text-align: center;
+}
+
+.accedi-da h4 {
+  font-size: 15px;
+  color: #000;
+  font-weight: 500;
+  margin-top: 40px;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 575px) {
+  .accedi-da h4 {
+    margin-top: 10px;
+  }
+}
+
+.accedi-da p {
+  font-size: 14px;
+  color: #505050;
+  font-weight: 400;
+  margin-top: 40px;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 575px) {
+  .accedi-da p {
+    margin-top: 10px;
+  }
+}
+
+.biografia {
+  margin-top: 20px;
+}
+
+.biografia p {
+  font-size: 15px;
+  color: #000;
+  font-weight: 500;
+}
+
+.Informazioni-personali label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #505050;
+}
+
+.Informazioni-personali textarea {
+  border: 1px solid #ced4da;
+  background: none;
+  resize: none;
+  font-size: 15px;
+  color: #505050;
+  font-weight: 500;
+}
+
+.Informazioni-personali input {
+  border: none;
+  border-bottom: 1px solid #ced4da !important;
+  border-radius: 0 !important;
+  max-width: 261px;
+  padding: 0px;
+  height: auto;
+}
+
+.Informazioni-personali input:focus {
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
+.aggiungi-esperienza {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 20px;
+}
+
+.aggiungi-esperienza button {
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  color: #fff;
+  border: 1px solid #000;
+  outline: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-right: 15px;
+}
+
+.aggiungi-esperienza button i {
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  background: #fd3a4a;
+  border-radius: 50%;
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+.aggiungi-esperienza button:hover i {
+  background: #a1e30f;
+}
+
+.aggiungi-esperienza-check .heading label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.aggiungi-esperienza-check .check-gender label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #505050;
+}
+
+.aggiungi-esperienza-check .check-gender label .checkmark {
+  top: 0px !important;
+}
+/*# sourceMappingURL=mian.css.map */
