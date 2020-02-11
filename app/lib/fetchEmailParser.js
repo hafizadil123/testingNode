@@ -136,6 +136,7 @@ export const events = async(req, res) => {
                const emailFetchedData = eventsDta.map(async(item) => {
               const organizer = item.Organizer.replace('mailto:', '');
               const userId = await findUserId(organizer);
+              console.log('=====', item.Invites.split('mailto:').join(''));
                 if (userId) {
                     const mapData = {
                         subject: item.Subject,
@@ -174,14 +175,18 @@ export const events = async(req, res) => {
     // if(!invitesArray.length) return null;
     const updatedArray = invitesArray.map((item)=> item);
        updatedArray.map((item) => {
-        const mapInvitesData = {
-          invitesEmail: item,
-          meetingId: meetingsAdded._id,
-      };
-      const updateInvites = new Invites({
-          ...mapInvitesData,
-      });
-      updateInvites.save();
+        if(item) {
+          const mapInvitesData = {
+            invitesEmail: item,
+            meetingId: meetingsAdded._id,
+        };
+        const updateInvites = new Invites({
+            ...mapInvitesData,
+        });
+        updateInvites.save();
+        } else {
+          console.log('comma exist');
+       }
        });
   };
 
