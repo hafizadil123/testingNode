@@ -114,7 +114,7 @@ class MeetingsController extends BaseController {
     const memberCount = members.invites.split(',');
     const feedback = await Feedback.find({ meetingId: meetingId });
     const membersFeedback = {
-      members: memberCount.length,
+      members: memberCount.filter((item) => item).length,
       feebackCount: feedback.length,
     };
     return membersFeedback;
