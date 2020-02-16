@@ -1,18 +1,23 @@
 import BaseController from './base.controller';
 import User from '../models/user';
-import { sendRegistrationEmail, forgotPasswordEmail } from '../lib/util';
-
+import multer from 'multer';
+import ContactUsModel from '../models/contactUs';
+const path = require('path');
+import { sendRegistrationEmail, forgotPasswordEmail, contactUsEmail } from '../lib/util';
+import { uploadImages } from '../lib/util';
 class UsersController extends BaseController {
-
   whitelist = [
     'firstname',
     'lastname',
     'email',
     'password',
     'fullName',
+    'message',
+    'name',
+    'avatar',
   ];
 
-  _populate = async (req, res, next) => {
+  _populate = async(req, res, next) => {
     const { body: { email } } = req;
     try {
       const user = await User.findOne({ email });
@@ -28,7 +33,7 @@ class UsersController extends BaseController {
     }
   }
 
-  search = async (_req, res, next) => {
+  search = async(_req, res, next) => {
     try {
       // @TODO Add pagination
       res.json(await User.find());
@@ -47,7 +52,7 @@ class UsersController extends BaseController {
     res.json(user);
   }
 
-  create = async (req, res, next) => {
+  create = async(req, res, next) => {
     const params = this.filterParams(req.body, this.whitelist);
     let newUser = new User({
       ...params,
@@ -57,14 +62,33 @@ class UsersController extends BaseController {
       const savedUser = await newUser.save();
       const token = savedUser.generateToken();
       await sendRegistrationEmail(params.email);
-      res.status(201).json({ token, message: 'Your account is created successfully!'});
+      res.status(201).json({ token, message: 'Your account is created successfully!' });
     } catch(err) {
       err.status = 400;
       next(err);
     }
   }
 
-  update = async (req, res, next) => {
+  contactUs = async(req, res, next) => {
+    const filteredParams = this.filterParams(req.body, this.whitelist);
+    await contactUsEmail(filteredParams);
+    let Inquery = new ContactUsModel({
+      ...filteredParams,
+    });
+    await Inquery.save();
+    res.status(201).json({ messageResponse: 'your query has been submitted, Admin will come back shortly!' });
+  }
+
+  updateProfile = async(req, res, next) => {
+    const newAttributes = this.filterParams(req.body, this.whitelist);
+    const updatedUser = Object.assign({}, req.currentUser, newAttributes);
+   const uploadFunction = await uploadImages();
+   uploadFunction(req, res, function(err) {
+      if(err) return;
+      res.json({ updatedUser, success: true });
+            });
+  };
+  update = async(req, res, next) => {
     const newAttributes = this.filterParams(req.body, this.whitelist);
     const updatedUser = Object.assign({}, req.currentUser, newAttributes);
     const query = req.query.userId !== 'undefined' ? req.query.userId : '';
@@ -81,7 +105,7 @@ class UsersController extends BaseController {
     }
   }
 
-  delete = async (req, res, next) => {
+  delete = async(req, res, next) => {
     if (!req.currentUser) {
       return res.sendStatus(403);
     }

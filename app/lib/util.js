@@ -6,6 +6,8 @@ import User from '../models/user.js';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
 import dateFormat from 'dateformat';
+const path = require('path');
+import multer from 'multer';
 
 export const sendRegistrationEmail = async(sendTo) =>{
   let transport = nodemailer.createTransport({
@@ -63,6 +65,30 @@ export const findUserIdByEmail = async(email) => {
   return user._id;
 }
 ;
+export const contactUsEmail = async(payload) => {
+
+  let transport = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+       user: 'havea@goodmeeting.today',
+       pass: 'S4v3T1m3',
+    },
+});
+  const message = {
+    from: payload.email, // Sender address
+    to: 'havea@goodmeeting.today', // List of recipients
+    subject: 'Inquiry Email from User', // Subject line
+    html: `<h1>${payload.name}</h1> <br /> <h3>${payload.email}</h3> <br /> <h4>${payload.message}</h4>`,
+  };
+  console.log('from', message.from)
+transport.sendMail(message, function(err, info) {
+  if (err) {
+   console.log('Error', err);
+  } else {
+ console.log('Feedback Mail Sent');
+  }
+});
+};
 const sendFeedbackMail = async(sendTo, inviteId, updatedCurrentDate, subject, fullName) =>{
   let transport = nodemailer.createTransport({
     service: 'Gmail',
@@ -133,4 +159,17 @@ if(currentDate > meetingDateUpdated) {
 } else {
   return false;
 }
+ };
+
+ export const uploadImages = () => {
+  let storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, path.join(__dirname, './upload/'));
+    },
+    filename: function(req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now() + '.jpg');
+    },
+  });
+  const upload = multer({ storage: storage }).single('avatar');
+  return upload;
  };

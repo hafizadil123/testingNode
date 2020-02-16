@@ -56,6 +56,9 @@ routes.get('/get-question-by-id', QuestionController._populate);
 // Admin
 routes.get('/admin', accessControl('admin'), MetaController.index);
 
+routes.post('/contact-us', UsersController.contactUs);
+routes.post('/update-profile', UsersController.updateProfile);
+
 routes.use(errorHandler);
 
 export default routes;
