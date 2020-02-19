@@ -15,7 +15,7 @@ class AuthController extends BaseController {
       }
 
       const token = user.generateToken();
-      return res.status(200).json({ token, userId: user._id });
+      return res.status(200).json({ token, userId: user._id, avatar: user.avatar, name: user.fullName, email: user.email });
     } catch (err) {
       next(err);
     }

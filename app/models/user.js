@@ -5,29 +5,32 @@ import Post from './post';
 import Constants from '../config/constants';
 
 const Schema = mongoose.Schema;
-const UserSchema = new Schema({
-  fullName: String,
-  email: {
-    type: String,
-    lowercase: true,
-    required: [true, 'Email is required'],
-    validate: {
-      validator(email) {
-        // eslint-disable-next-line max-len
-        const emailRegex = /^[-a-z0-9%S_+]+(\.[-a-z0-9%S_+]+)*@(?:[a-z0-9-]{1,63}\.){1,125}[a-z]{2,63}$/i;
-        return emailRegex.test(email);
+const UserSchema = new Schema(
+  {
+    fullName: String,
+    email: {
+      type: String,
+      lowercase: true,
+      required: [true, 'Email is required'],
+      validate: {
+        validator(email) {
+          // eslint-disable-next-line max-len
+          const emailRegex = /^[-a-z0-9%S_+]+(\.[-a-z0-9%S_+]+)*@(?:[a-z0-9-]{1,63}\.){1,125}[a-z]{2,63}$/i;
+          return emailRegex.test(email);
+        },
+        message: '{VALUE} is not a valid email.',
       },
-      message: '{VALUE} is not a valid email.',
     },
+    password: {
+      type: String,
+      required: [true, 'Password is required.'],
+    },
+    avatar: String,
   },
-  password: {
-    type: String,
-    required: [true, 'Password is required.'],
-  },
-  avatar: String,
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Strip out password field when sending user object to client
 UserSchema.set('toJSON', {
@@ -36,23 +39,21 @@ UserSchema.set('toJSON', {
     obj.id = obj._id;
     delete obj._id;
     delete obj.__v;
-    delete obj.password;
+   // delete obj.password;
     return obj;
   },
 });
 
 // Ensure email has not been taken
-UserSchema
-  .path('email')
-  .validate((email, respond) => {
-    UserModel.findOne({ email })
-      .then((user) => {
-        respond(user ? false : true);
-      })
-      .catch(() => {
-        respond(false);
-      });
-  }, 'Email already in use.');
+UserSchema.path('email').validate((email, respond) => {
+  UserModel.findOne({ email })
+    .then((user) => {
+      respond(user ? false : true);
+    })
+    .catch(() => {
+      respond(false);
+    });
+}, 'Email already in use.');
 
 // Validate username is not taken
 // UserSchema
@@ -68,28 +69,42 @@ UserSchema
 //   }, 'Username already taken.');
 
 // Validate password field
-UserSchema
-  .path('password')
-  .validate(function(password) {
-    return password.length >= 6 && password.match(/\d+/g);
-  }, 'Password be at least 6 characters long and contain 1 number.');
+UserSchema.path('password').validate(function(password) {
+  return password.length >= 6 && password.match(/\d+/g);
+}, 'Password be at least 6 characters long and contain 1 number.');
 
 //
-UserSchema
-  .pre('save', function(done) {
-    // Encrypt password before saving the document
-    if (this.isModified('password')) {
-      const { saltRounds } = Constants.security;
-      this._hashPassword(this.password, saltRounds, (err, hash) => {
-        this.password = hash;
-        done();
-      });
-    } else {
+UserSchema.pre('save', function(done) {
+  // Encrypt password before saving the document
+  if (this.isModified('password')) {
+    const { saltRounds } = Constants.security;
+    this._hashPassword(this.password, saltRounds, (err, hash) => {
+      this.password = hash;
       done();
-    }
-    // eslint-enable no-invalid-this
-  });
+    });
+  } else {
+    done();
+  }
+  // eslint-enable no-invalid-this
+});
 
+// UserSchema.pre('update', function(done) {
+//   // Encrypt password before saving the document
+//   const data = this.getUpdate();
+//   if (data.password) {
+//     const { saltRounds } = Constants.security;
+//     const _this = this;
+//     bcrypt.hash((data.password, saltRounds, (err, hash) => {
+//       console.log('hash', hash)
+//       //this.password = hash;
+//      //  _this.update({}, data);
+//       done();
+//     }));
+//   } else {
+//     done();
+//   }
+//   // eslint-enable no-invalid-this
+// });
 /**
  * User Methods
  */
@@ -127,7 +142,11 @@ UserSchema.methods = {
    * @param {Function} callback
    * @return {Boolean} passwords match
    */
-  _hashPassword(password, saltRounds = Constants.security.saltRounds, callback) {
+  _hashPassword(
+    password,
+    saltRounds = Constants.security.saltRounds,
+    callback
+  ) {
     return bcrypt.hash(password, saltRounds, callback);
   },
 };

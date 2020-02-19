@@ -79,15 +79,12 @@ class UsersController extends BaseController {
     res.status(201).json({ messageResponse: 'your query has been submitted, Admin will come back shortly!' });
   }
 
-  updateProfile = async(req, res, next) => {
-    const newAttributes = this.filterParams(req.body, this.whitelist);
-    const updatedUser = Object.assign({}, req.currentUser, newAttributes);
-   const uploadFunction = await uploadImages();
-   uploadFunction(req, res, function(err) {
-      if(err) return;
-      res.json({ updatedUser, success: true });
-            });
-  };
+  getProfile = async(req, res, next) => {
+    const userId = req.query.userId;
+    const user = await User.findById(userId);
+    res.json({ user });
+  }
+
   update = async(req, res, next) => {
     const newAttributes = this.filterParams(req.body, this.whitelist);
     const updatedUser = Object.assign({}, req.currentUser, newAttributes);
