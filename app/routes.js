@@ -94,11 +94,13 @@ routes.post('/update-profile', upload.single('avatar'), async function(
              if(req.file) {
                objectFile['avatar'] = req.file.filename;
              }
-             User.update({ _id: req.query.userId }, { $set: objectFile  }, { multi: true, new: true } ).then((user) => {
+             User.update({ _id: req.query.userId }, { $set: objectFile }, { multi: true, new: true } ).then((user) => {
               if(user) {
-                return res.json({ message: 'Profile updated successfully.',
-                success: true,
-                user: objectFile });
+                User.findById(req.query.userId).then((updatedUser) => {
+                  return res.json({ message: 'Profile updated successfully.',
+                  success: true,
+                  user: updatedUser });
+                 });
               }
             });
            });
@@ -113,9 +115,11 @@ routes.post('/update-profile', upload.single('avatar'), async function(
           }
           User.update({ _id: req.query.userId }, { $set: objectFile }, { multi: true, new: true } ).then((user) => {
             if(user) {
-              return res.json({ message: 'Profile updated successfully.',
-              success: true,
-              user: objectFile });
+               User.findById(req.query.userId).then((updatedUser) => {
+                return res.json({ message: 'Profile updated successfully.',
+                success: true,
+                user: updatedUser });
+               });
             }
           });
         }
@@ -124,7 +128,7 @@ routes.post('/update-profile', upload.single('avatar'), async function(
   };
   const result = await isModifiedPassword();
   if(result) {
-    //return res.json({ message: 'user not found!', success: false });
+    // return res.json({ message: 'user not found!', success: false });
   } else {
     return res.json({ message: 'old password is incorrect.', success: false });
   }
