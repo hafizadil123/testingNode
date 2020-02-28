@@ -349,7 +349,7 @@ export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userNa
 
 														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">That equals a lot of people and even more money. </p>
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Thankfully, {Name} uses Good Meeting Today to get feedback on meetings and would like to know what you thought of the meeting with them. </p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Thankfully, ${userName} uses Good Meeting Today to get feedback on meetings and would like to know what you thought of the meeting with them. </p>
 
 
 														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Want to ensure you get the most out of meetings? <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
