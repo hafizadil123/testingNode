@@ -84,7 +84,7 @@ class MeetingsController extends BaseController {
     const userId = req.query.userId;
     const userMeetings = await Meeting.find({ _user: userId }).populate(
       '_user'
-    );
+    ).sort({ createdAt: -1 });
     // const members = userMeetings.map((item) => item.invites.split(',').length);
 
     //  userMeetings me sari ek user ki meetings mil rahi hain... meny us meeting kitny members r kitny bndo ny feedback
