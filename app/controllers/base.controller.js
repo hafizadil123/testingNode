@@ -16,7 +16,7 @@ class BaseController {
 		}
 
 		const formatted = {
-			message: err.message,
+			message: err.message
 		};
 
 		if (err.errors) {

@@ -1,5 +1,4 @@
-export const reigstrationEmailTemplate =
-`<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+export const reigstrationEmailTemplate = `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -144,7 +143,7 @@ Congratulations, you’re now on the first step to having more efficient meeting
 </div>
 </body>
 </html>`;
-export const forgotPasswordTemplate = (updateUrl, userId) => (`<!DOCTYPE html>
+export const forgotPasswordTemplate = (updateUrl, userId) => `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -228,8 +227,15 @@ export const forgotPasswordTemplate = (updateUrl, userId) => (`<!DOCTYPE html>
 
 </div>
 </body>
-</html>`);
-export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userName, currentData, subject) => ( `<!DOCTYPE html>
+</html>`;
+export const feedbackEmailTemplate = (
+	meetingId,
+	inviteEmail,
+	inviteName,
+	userName,
+	startDateTime,
+	subject
+) => `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
@@ -329,7 +335,7 @@ export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userNa
                                                         GoodMeeting Today</h1>
 														
 									
-														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal"> Thank you for attending the meeting with ${userName} on ${currentData} with the subject ${subject}. </p>
+														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal"> Thank you for attending the meeting with ${userName} on ${startDateTime} with the subject ${subject}. </p>
 														
 														
                                                     <h2 style="color:#5e5e5e;font-size:28px;text-align:center;line-height:  25px;font-weight:normal; margin-top: 40px;">
@@ -376,6 +382,4 @@ export const feedbackEmailTemplate = (meetingId, inviteEmail, inviteName, userNa
 
 </div>
 </body>
-</html>`
-)
-;
+</html>`;

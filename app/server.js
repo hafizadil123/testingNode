@@ -23,7 +23,7 @@ app.use(cors());
 // Request logger
 // https://github.com/expressjs/morgan
 if (!Constants.envs.test) {
-  app.use(morgan('dev'));
+	app.use(morgan('dev'));
 }
 
 // Parse incoming request bodies
@@ -39,16 +39,15 @@ app.use(methodOverride());
 //app.use('/public', express.static(`${__dirname}/public`));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // Mount API routes
 app.use(Constants.apiPrefix, routes);
 cron.schedule('* * * * *', () => {
-  events();
-  sendFeedbackEmailsToInvites();
+	events();
+	//csendFeedbackEmailsToInvites();
 });
 app.listen(Constants.port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`
+	// eslint-disable-next-line no-console
+	console.log(`
     Port: ${Constants.port}
     Env: ${app.get('env')}
   `);
