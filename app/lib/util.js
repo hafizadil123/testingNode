@@ -48,8 +48,11 @@ export const getAttachment = async () => {
 					.map(async (part) => {
 						// retrieve the attachments only of the messages with attachments
 						const partData = await connection.getPartData(message, part);
-						//console.log('part: ---', part);
-						if (part.subtype === 'ics' || part.subtype === 'calendar') {
+
+						if (
+							(part.subtype === 'ics' && part.type === 'application' && part.params !== null) ||
+							(part.subtype === 'calendar' && part.type === 'text' && part.params !== null)
+						) {
 							return {
 								filename: part.subtype,
 								data: partData
@@ -60,20 +63,18 @@ export const getAttachment = async () => {
 		});
 		const attachmentArray = await Promise.all(attachments);
 		const filterAttachmentArray = attachmentArray.filter(Boolean);
-		//console.log('array: ', filterAttachmentArray);
+
 		let icsFileData = [];
 		icsFileData = filterAttachmentArray.map(async (file) => {
-			//console.log('file: ,-----', file.data);
 			let buff = new Buffer(file.data, 'base64');
 			let text = await buff.toString('ascii');
 			const data = await ical.async.parseICS(text);
 
-			//console.log('data: ', Object.values(data));
 			const objectKeys = Object.values(data);
-			//console.log('--objectKeys----: ', objectKeys[0]);
+
 			const filterObj =
 				objectKeys.length === 1 || objectKeys[0].type === 'VEVENT' ? objectKeys[0] : objectKeys[1];
-			//console.log('--filterObj----: ', filterObj.attendee);
+
 			const desiredObj = {
 				subject: filterObj.summary.val ? filterObj.summary.val : filterObj.summary,
 				description: filterObj.description.val ? filterObj.description.val : filterObj.description,
@@ -93,12 +94,9 @@ export const getAttachment = async () => {
 							),
 				location: filterObj.location.val ? filterObj.location.val : filterObj.location
 			};
-			//console.log('--desiredObj----: ', desiredObj);
 			icsFileData.push(desiredObj);
 		});
-		const icsFileDataArray = await Promise.all(icsFileData);
-		//console.log('icsFileData data: ', await icsFileData);
-		//console.log('icsFileDataArray array: ', icsFileDataArray);
+		//const icsFileDataArray = await Promise.all(icsFileData);
 		return await icsFileData;
 	} catch (e) {
 		console.log('Error');
@@ -219,8 +217,8 @@ export const sendFeedbackEmailsToInvites = async () => {
 			await Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
 				// const meetingData = meeting && meeting.dateEnd && meeting.dateEnd.split(',')[1].concat(meeting.dateEnd.split(',')[2]).concat(meeting.dateEnd.split(',')[3]);
 				if (meeting && compareDates(meeting.endDatWithoutEncoding)) {
-          let subject = meeting.subject[0] || 'Good Meetings';
-          let startDateTime = meeting.dateStart;
+					let subject = meeting.subject[0] || 'Good Meetings';
+					let startDateTime = meeting.dateStart;
 					sendFeedbackMail(item.invitesEmail, item._id, startDateTime, subject, meeting._user.fullName);
 					item.isEmailSent = true;
 					item.save();
