@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(Constants.apiPrefix, routes);
 cron.schedule('* * * * *', () => {
 	events();
-	//csendFeedbackEmailsToInvites();
+	sendFeedbackEmailsToInvites();
 });
 app.listen(Constants.port, () => {
 	// eslint-disable-next-line no-console
