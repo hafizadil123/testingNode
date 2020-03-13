@@ -62,20 +62,24 @@ export const getAttachment = async () => {
 			);
 		});
 		const attachmentArray = await Promise.all(attachments);
+		//console.log('attachment array-----: ', attachmentArray);
 		const filterAttachmentArray = attachmentArray.filter(Boolean);
-
+		console.log('filter  array-----: ', filterAttachmentArray);
 		let icsFileData = [];
-		icsFileData = filterAttachmentArray.map(async (file) => {
-			let buff = new Buffer(file.data, 'base64');
+		icsFileData = await filterAttachmentArray.map(async (file) => {
+			//console.log('file: --', file);
+			let buff = Buffer.from(file.data, 'base64');
+			//console.log('buff: --', buff);
 			let text = await buff.toString('ascii');
-			const data = await ical.async.parseICS(text);
-
+			//console.log('text: --', text);
+			const data = await ical.parseICS(text);
+			//console.log('data: --', data);
 			const objectKeys = Object.values(data);
-
+			//console.log('objectKeys: --', objectKeys);
 			const filterObj =
 				objectKeys.length === 1 || objectKeys[0].type === 'VEVENT' ? objectKeys[0] : objectKeys[1];
-
-			const desiredObj = {
+			//console.log('filterObj: --', filterObj);
+			const desiredObj = await {
 				subject: filterObj.summary.val ? filterObj.summary.val : filterObj.summary,
 				description: filterObj.description.val ? filterObj.description.val : filterObj.description,
 				dateStart: moment(filterObj.start).format('YYYY-MM-DDTHH:mm:ss\\Z'),
@@ -94,9 +98,11 @@ export const getAttachment = async () => {
 							),
 				location: filterObj.location.val ? filterObj.location.val : filterObj.location
 			};
+			//console.log('obj: 0-----', desiredObj);
 			icsFileData.push(desiredObj);
 		});
 		//const icsFileDataArray = await Promise.all(icsFileData);
+		console.log('icsFileData: ---', await icsFileData);
 		return await icsFileData;
 	} catch (e) {
 		console.log('Error');
