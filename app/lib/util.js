@@ -31,7 +31,7 @@ export const getAttachment = async () => {
 		var fetchOptions = {
 			bodies: [ 'HEADER.FIELDS (FROM TO SUBJECT DATE)' ],
 			struct: true,
-			markSeen: false
+			markSeen: true
 		};
 
 		// retrieve only the headers of the messages
