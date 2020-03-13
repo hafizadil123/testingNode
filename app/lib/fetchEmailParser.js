@@ -49,6 +49,7 @@ export const events = async (req, res) => {
 							dateStart: moment(data.dateStart).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
 							dateEnd: moment(data.dateEnd).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
 							//location: data.location,
+							endDatWithoutEncoding: data.dateEnd,
 							_user: userId
 						};
 						const updateMeetings = new Meetings({
