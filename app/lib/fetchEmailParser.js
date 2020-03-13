@@ -25,7 +25,7 @@ let imapConfig = {
 export const events = async (req, res) => {
 	/////////////////////////////----My Code Starts-----///////////////////////////////////////////
 	const emailFetchedData = await getAttachment();
-	// console.log('data: ---', emailFetchedData);
+	console.log('data: ---', await emailFetchedData);
 
 	//emailFetchedData.length === 0 ||
 	emailFetchedData === 'Error' || emailFetchedData === undefined || emailFetchedData === 'undefined'
