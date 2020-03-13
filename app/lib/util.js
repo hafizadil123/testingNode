@@ -16,6 +16,8 @@ var config = {
 	imap: {
 		user: 'havea@goodmeeting.today',
 		password: 'S4v3T1m3',
+		// user: 'myguardiansixtesting@gmail.com',
+		// password: 'myguardiansix6',
 		host: 'imap.gmail.com',
 		port: 993,
 		tls: true,
@@ -95,7 +97,7 @@ export const getAttachment = async () => {
 						: filterObj.attendee.map(
 								(invite) =>
 									invite.params.EMAIL ? invite.params.EMAIL : invite.val.split('mailto:').join('')
-							),
+							)
 				//location: filterObj.location.val ? filterObj.location.val : filterObj.location
 			};
 			//console.log('obj: 0-----', desiredObj);
@@ -217,19 +219,23 @@ export const sendFeedbackEmailsToInvites = async () => {
 	let CurrentDate = new Date();
 	let updatedCurrentDate = dateFormat(CurrentDate, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
 	// const todayData = updatedCurrentDate.split(',')[1].concat(updatedCurrentDate.split(',')[2]).concat(updatedCurrentDate.split(',')[3]);
-
+	//console.log('invites: --', invites);
 	invites.map(async (item) => {
+		//console.log('invites: --', item);
 		if (!item.isEmailSent) {
+			console.log('inside isemail not true');
 			await Meeting.findOne({ _id: item.meetingId }).populate('_user').exec((err, meeting) => {
+				console.log('inside meeting');
 				// const meetingData = meeting && meeting.dateEnd && meeting.dateEnd.split(',')[1].concat(meeting.dateEnd.split(',')[2]).concat(meeting.dateEnd.split(',')[3]);
 				if (meeting && compareDates(meeting.endDatWithoutEncoding)) {
+					console.log('sent from loal: --');
 					let subject = meeting.subject[0] || 'Good Meetings';
 					let startDateTime = meeting.dateStart;
 					sendFeedbackMail(item.invitesEmail, item._id, startDateTime, subject, meeting._user.fullName);
 					item.isEmailSent = true;
 					item.save();
 				} else {
-					console.log('Meeting time not end till yet data outside');
+					//console.log('Meeting time not end till yet data outside');
 				}
 			});
 		}
@@ -249,7 +255,10 @@ export const formatedDate = (unformatedDate) => {
 
 export const compareDates = (meetingDate = '') => {
 	const todayDat = new Date();
+	console.log('curr date', todayDat);
+	console.log('meeting old date: --', meetingDate);
 	const meetingDateUpdated = new Date(meetingDate);
+	console.log('meeting end date: --', meetingDateUpdated);
 	const currentDate = todayDat;
 	if (currentDate > meetingDateUpdated) {
 		return true;
