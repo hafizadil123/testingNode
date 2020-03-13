@@ -14,8 +14,8 @@ import ical from 'node-ical';
 
 var config = {
 	imap: {
-		user: 'havea@goodmeeting.today',
-		password: 'S4v3T1m3',
+		user: 'myguardiansixtesting@gmail.com',
+		password: 'myguardiansix6',
 		host: 'imap.gmail.com',
 		port: 993,
 		tls: true,
@@ -31,7 +31,7 @@ export const getAttachment = async () => {
 		var fetchOptions = {
 			bodies: [ 'HEADER.FIELDS (FROM TO SUBJECT DATE)' ],
 			struct: true,
-			markSeen: true
+			markSeen: false
 		};
 
 		// retrieve only the headers of the messages
@@ -81,7 +81,7 @@ export const getAttachment = async () => {
 			//console.log('filterObj: --', filterObj);
 			const desiredObj = await {
 				subject: filterObj.summary.val ? filterObj.summary.val : filterObj.summary,
-				description: filterObj.description.val ? filterObj.description.val : filterObj.description,
+				//description: filterObj.description.val ? filterObj.description.val : filterObj.description,
 				dateStart: moment(filterObj.start).format('YYYY-MM-DDTHH:mm:ss\\Z'),
 				dateEnd: moment(filterObj.end).format('YYYY-MM-DDTHH:mm:ss\\Z'),
 				organizer: filterObj.organizer.params.EMAIL
@@ -96,7 +96,7 @@ export const getAttachment = async () => {
 								(invite) =>
 									invite.params.EMAIL ? invite.params.EMAIL : invite.val.split('mailto:').join('')
 							),
-				location: filterObj.location.val ? filterObj.location.val : filterObj.location
+				//location: filterObj.location.val ? filterObj.location.val : filterObj.location
 			};
 			//console.log('obj: 0-----', desiredObj);
 			icsFileData.push(desiredObj);
