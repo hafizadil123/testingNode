@@ -15,12 +15,12 @@ let multer = require('multer');
 import bcrypt from 'bcrypt';
 const path = require('path');
 let storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, path.join(__dirname, './public/images'));
-  },
-  filename: function(req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + '.jpg');
-  },
+	destination: function(req, file, cb) {
+		cb(null, path.join(__dirname, './public/images'));
+	},
+	filename: function(req, file, cb) {
+		cb(null, file.fieldname + '-' + Date.now() + '.jpg');
+	}
 });
 const upload = multer({ storage: storage });
 const routes = new Router();
@@ -36,11 +36,7 @@ routes.post('/users', UsersController.create);
 routes.get('/users/me', authenticate, UsersController.fetch);
 routes.put('/users/me', authenticate, UsersController.update);
 routes.delete('/users/me', authenticate, UsersController.delete);
-routes.get(
-  '/users/:username',
-  UsersController._populate,
-  UsersController.fetch
-);
+routes.get('/users/:username', UsersController._populate, UsersController.fetch);
 routes.post('/users/forgot-password', UsersController.forgotPassword);
 routes.post('/users/update-password', UsersController.update);
 // Post
@@ -71,69 +67,78 @@ routes.get('/get-stats-by-user-id', QuestionController.getStatsQuestion);
 routes.get('/get-question-by-id', QuestionController._populate);
 // Admin
 routes.get('/admin', accessControl('admin'), MetaController.index);
+routes.get('/admin/get-users', [ authenticate, accessControl('admin') ], UsersController.getUsers);
+routes.get('/admin/get-meetings', [ authenticate, accessControl('admin') ], MeetingsController.getMeetings);
 
 routes.post('/contact-us', UsersController.contactUs);
 routes.get('/get-profile', UsersController.getProfile);
-routes.post('/update-profile', upload.single('avatar'), async function(
-  req,
-  res,
-  next
-) {
-  const { name, email, oldPassword, newPassword, avatar } = req.body;
-  let insObject = { fullName: name, email };
-  if (avatar) insObject['avatar'] = avatar;
+routes.post('/update-profile', upload.single('avatar'), async function(req, res, next) {
+	const { name, email, oldPassword, newPassword, avatar } = req.body;
+	let insObject = { fullName: name, email };
+	if (avatar) insObject['avatar'] = avatar;
 
-    const isModifiedPassword = async() => {
-      const user = await User.findById(req.query.userId);
-      if (user) {
-        if (newPassword && oldPassword) {
-          if (user.authenticate(oldPassword)) {
-           bcrypt.hash(newPassword, 4).then((hash) => {
-             insObject['password'] = hash;
-             const objectFile = { fullName: insObject.fullName, password: insObject.password };
-             if(req.file) {
-               objectFile['avatar'] = req.file.filename;
-             }
-             User.update({ _id: req.query.userId }, { $set: objectFile }, { multi: true, new: true } ).then((user) => {
-              if(user) {
-                User.findById(req.query.userId).then((updatedUser) => {
-                  return res.json({ message: 'Profile updated successfully.',
-                  success: true,
-                  user: updatedUser });
-                 });
-              }
-            });
-           });
-          } else {
-              return false;
-          }
-        }
-        if(name && !newPassword && !oldPassword) {
-          const objectFile = { fullName: insObject.fullName };
-          if(req.file) {
-            objectFile['avatar'] = req.file.filename;
-          }
-          User.update({ _id: req.query.userId }, { $set: objectFile }, { multi: true, new: true } ).then((user) => {
-            if(user) {
-               User.findById(req.query.userId).then((updatedUser) => {
-                return res.json({ message: 'Profile updated successfully.',
-                success: true,
-                user: updatedUser });
-               });
-            }
-          });
-        }
-    }
-    return true;
-  };
-  const result = await isModifiedPassword();
-  if(result) {
-    // return res.json({ message: 'user not found!', success: false });
-  } else {
-    return res.json({ message: 'old password is incorrect.', success: false });
-  }
-  }
-);
+	const isModifiedPassword = async () => {
+		const user = await User.findById(req.query.userId);
+		if (user) {
+			if (newPassword && oldPassword) {
+				if (user.authenticate(oldPassword)) {
+					bcrypt.hash(newPassword, 4).then((hash) => {
+						insObject['password'] = hash;
+						const objectFile = { fullName: insObject.fullName, password: insObject.password };
+						if (req.file) {
+							objectFile['avatar'] = req.file.filename;
+						}
+						User.update(
+							{ _id: req.query.userId },
+							{ $set: objectFile },
+							{ multi: true, new: true }
+						).then((user) => {
+							if (user) {
+								User.findById(req.query.userId).then((updatedUser) => {
+									return res.json({
+										message: 'Profile updated successfully.',
+										success: true,
+										user: updatedUser
+									});
+								});
+							}
+						});
+					});
+				} else {
+					return false;
+				}
+			}
+			if (name && !newPassword && !oldPassword) {
+				const objectFile = { fullName: insObject.fullName };
+				if (req.file) {
+					objectFile['avatar'] = req.file.filename;
+				}
+				User.update(
+					{ _id: req.query.userId },
+					{ $set: objectFile },
+					{ multi: true, new: true }
+				).then((user) => {
+					if (user) {
+						User.findById(req.query.userId).then((updatedUser) => {
+							return res.json({
+								message: 'Profile updated successfully.',
+								success: true,
+								user: updatedUser
+							});
+						});
+					}
+				});
+			}
+		}
+		return true;
+	};
+	const result = await isModifiedPassword();
+	if (result) {
+		// return res.json({ message: 'user not found!', success: false });
+	} else {
+		return res.json({ message: 'old password is incorrect.', success: false });
+	}
+});
 
 routes.use(errorHandler);
 
