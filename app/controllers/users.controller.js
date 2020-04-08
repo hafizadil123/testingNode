@@ -120,9 +120,6 @@ class UsersController extends BaseController {
 			$and: [ { createdAt: { $gte: new Date(compDate), $lte: new Date(tadayDate) } }, { role: { $ne: 'admin' } } ]
 		}).count();
 		const totalUsers = await User.find({ role: { $ne: 'admin' } }).count();
-		if (!thisWeekUsers || !totalUsers) {
-			return res.status(400).json({ message: 'not found!' });
-		}
 		const responseObj = {
 			thisWeekUsers: thisWeekUsers,
 			totalUsers: totalUsers
