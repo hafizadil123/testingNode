@@ -229,12 +229,12 @@ export const forgotPasswordTemplate = (updateUrl, userId) => `<!DOCTYPE html>
 </body>
 </html>`;
 export const feedbackEmailTemplate = (
-	meetingId,
-	inviteEmail,
-	inviteName,
-	userName,
-	startDateTime,
-	subject
+  meetingId,
+  inviteEmail,
+  inviteName,
+  userName,
+  startDateTime,
+  subject
 ) => `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -343,11 +343,11 @@ export const feedbackEmailTemplate = (
                                                     <ul style="margin: 50px 0px;text-align: center;">
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #625675;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;margin-right: 15px;"
-                                                               href='https://goodmeeting.today/feedback-form?isGood=1&meetingId=${meetingId}&email=${inviteEmail}&invitee=${inviteName}'>Yes, on the whole it was good</a>
+                                                               href='https://goodmeeting.today/feedback-form?isGood=1&meetingId=${meetingId}&email=${userName}&invitee=${inviteName}'>Yes, on the whole it was good</a>
                                                         </li>
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #E15752;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;"
-                                                               href="https://goodmeeting.today/feedback-form?isGood=0&meetingId=${meetingId}&email=${inviteEmail}&invitee=${inviteName}">No, overall it wasn’t great</a>
+                                                               href="https://goodmeeting.today/feedback-form?isGood=0&meetingId=${meetingId}&email=${userName}&invitee=${inviteName}">No, overall it wasn’t great</a>
                                                         </li>
                                                     </ul>
                                                     <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
