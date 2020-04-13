@@ -68,11 +68,57 @@ class MeetingsController extends BaseController {
 		const { meetingId } = req.query;
 
 		const invitees = await Invite.find({ meetingId: meetingId });
+		const score = await this.getMeetingAvg(meetingId);
 		if (!invitees) {
 			return res.status(400).json({ message: 'no invitees found!' });
 		}
-
-		return res.status(200).json({ message: 'success', invitees: invitees });
+		const dataArr = [];
+		invitees.map((item) => {
+			const obj = {
+				_id: item._id,
+				invitesEmail: item.invitesEmail,
+				date: moment(item.createdAt).format('LL'),
+				score: score,
+				isFeedbackGiven: item.isFeedbackGiven
+			};
+			return dataArr.push(obj);
+		});
+		return res.status(200).json({ message: 'success', invitees: dataArr });
+	};
+	// get invitee detail helper function
+	getMeetingAvg = async (meetingId) => {
+		const meetings = await Meeting.findById({ _id: meetingId });
+		let result;
+		if (!meetings) {
+			return res.status(400).json({ message: 'no meeting found!' });
+		}
+		const { subject, invites, dateEnd } = meetings;
+		const members = invites.split(',').length;
+		const getAnswerArray = await QuestionAnswers.find({});
+		getAnswerArray.map((item) => item.answer);
+		const feedback = await Feedback.find({ meetingId: meetingId });
+		// console.log(feedback);
+		const gooMeeting = feedback.filter((item) => item.isGood === true);
+		const badMeeting = feedback.filter((item) => item.isGood === false);
+		const totalFeedback = feedback.length;
+		const noResponse = members - totalFeedback;
+		result = feedback.map((el) => {
+			return el.feedbackResults.map((item) => item.answerId);
+		});
+		let mergedResults = [].concat.apply([], result);
+		const getAns = getAnswerArray.map((item) => item.answers);
+		let getAnsMerged = [].concat.apply([], getAns);
+		const matchedResults = mergedResults.map((item) => getAnsMerged.filter((el) => el.id == item));
+		let removeArraySymbol = [].concat.apply([], matchedResults);
+		let total =
+			removeArraySymbol.length > 0
+				? removeArraySymbol.reduce(function(accumulator, currentValue) {
+						return accumulator + currentValue.weightage;
+					}, 0)
+				: 0;
+		// count total and devide to total
+		const avgMeetingScore = total !== 0 ? Math.trunc(total / removeArraySymbol.length) : 0;
+		return avgMeetingScore;
 	};
 
 	// Get Meetings Card Data By Admin (Admin Specific Function)
