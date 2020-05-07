@@ -43,8 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount API routes
 app.use(Constants.apiPrefix, routes);
 cron.schedule('* * * * *', () => {
-	// events();
-	// sendFeedbackEmailsToInvites();
+	events();
+	sendFeedbackEmailsToInvites();
 });
 let server = app.listen(Constants.port, () => {
 	// eslint-disable-next-line no-console
