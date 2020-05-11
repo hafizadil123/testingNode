@@ -50,6 +50,8 @@ export const events = async (req, res) => {
 							dateEnd: moment(data.dateEnd).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
 							//location: data.location,
 							endDatWithoutEncoding: data.dateEnd,
+							status: data.status,
+							uId: data.uId,
 							_user: userId
 						};
 						const updateMeetings = new Meetings({
@@ -65,23 +67,33 @@ const findUserId = (item) => {
 	return id;
 };
 const updateDataInModels = async (data) => {
-	const meetingsAdded = await data.save();
-	const invitesArray = meetingsAdded.invites.split(',');
-	//  const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
-	// if(!invitesArray.length) return null;
-	const updatedArray = invitesArray.map((item) => item);
-	updatedArray.map((item) => {
-		if (item) {
-			const mapInvitesData = {
-				invitesEmail: item,
-				meetingId: meetingsAdded._id
-			};
-			const updateInvites = new Invites({
-				...mapInvitesData
-			});
-			updateInvites.save();
-		} else {
-			console.log('comma exist');
-		}
-	});
+	// remove cancelled meeting if it exist
+	const deletMeeting = await Meetings.findOneAndDelete({ uId: data.uId });
+	if (deletMeeting) {
+		console.log('--if already exist--');
+		await Invites.remove({ uId: data.uId });
+		return;
+	} else {
+		console.log('--else not exist--');
+		const meetingsAdded = await data.save();
+		const invitesArray = meetingsAdded.invites.split(',');
+		//  const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
+		// if(!invitesArray.length) return null;
+		const updatedArray = invitesArray.map((item) => item);
+		updatedArray.map((item) => {
+			if (item) {
+				const mapInvitesData = {
+					invitesEmail: item,
+					meetingId: meetingsAdded._id,
+					uId: data.uId
+				};
+				const updateInvites = new Invites({
+					...mapInvitesData
+				});
+				updateInvites.save();
+			} else {
+				console.log('comma exist');
+			}
+		});
+	}
 };
