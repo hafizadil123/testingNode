@@ -15,12 +15,20 @@ export default function accessControl(role) {
 	return (req, res, next) =>
 		authenticate(req, res, (err) => {
 			const currentRoleIndex = Constants.userRoles.indexOf(req.currentUser.role);
+<<<<<<< HEAD
+			if (err || !req.currentUser || currentRoleIndex < requiredRoleIndex) {
+				res.sendStatus(403);
+				return;
+			}
+
+=======
 
 			if (err || !req.currentUser || currentRoleIndex < requiredRoleIndex) {
 				res.sendStatus(403);
 				return;
 			}
 
+>>>>>>> 0de5c76d40e745eacc0e5fa36a89e31123ede938
 			next();
 		});
 }

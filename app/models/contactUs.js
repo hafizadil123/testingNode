@@ -14,6 +14,10 @@ const ContactUs = new Schema(
 		message: {
 			type: String,
 			required: true
+		},
+		status: {
+			type: String,
+			default: 'opened'
 		}
 		// media: { type: Schema.Types.ObjectId, ref: 'Media' },
 		// likes : [{ type: Schema.Types.ObjectId, ref: 'Like' }],

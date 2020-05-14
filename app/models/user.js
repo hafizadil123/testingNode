@@ -25,7 +25,11 @@ const UserSchema = new Schema(
 			type: String,
 			required: [ true, 'Password is required.' ]
 		},
-		avatar: String
+		avatar: String,
+		role: {
+			type: String,
+			default: 'user'
+		}
 	},
 	{
 		timestamps: true

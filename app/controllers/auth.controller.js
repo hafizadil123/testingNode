@@ -13,11 +13,17 @@ class AuthController extends BaseController {
 				err.status = 401;
 				return next(err);
 			}
-
 			const token = user.generateToken();
 			return res
 				.status(200)
-				.json({ token, userId: user._id, avatar: user.avatar, name: user.fullName, email: user.email });
+				.json({
+					token,
+					userId: user._id,
+					avatar: user.avatar,
+					name: user.fullName,
+					email: user.email,
+					role: user.role
+				});
 		} catch (err) {
 			next(err);
 		}

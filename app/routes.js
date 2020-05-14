@@ -67,6 +67,22 @@ routes.get('/get-stats-by-user-id', QuestionController.getStatsQuestion);
 routes.get('/get-question-by-id', QuestionController._populate);
 // Admin
 routes.get('/admin', accessControl('admin'), MetaController.index);
+routes.get('/admin/get-all-contact-us', [ authenticate, accessControl('admin') ], UsersController.getAllContactUs);
+routes.post(
+	'/admin/change-contact-us-status',
+	[ authenticate, accessControl('admin') ],
+	UsersController.changeContactUsStatus
+);
+routes.get('/admin/get-users', [ authenticate, accessControl('admin') ], UsersController.getUsers);
+routes.get('/admin/get-users-card-data', [ authenticate, accessControl('admin') ], UsersController.getUsersCardData);
+routes.get('/admin/get-meetings', [ authenticate, accessControl('admin') ], MeetingsController.getMeetings);
+routes.get('/admin/get-invitee-detail', [ authenticate, accessControl('admin') ], MeetingsController.getInviteeDetail);
+routes.get(
+	'/admin/get-meetings-card-data',
+	[ authenticate, accessControl('admin') ],
+	MeetingsController.getMeetingsCardData
+);
+routes.get('/admin/get-meetings-detail', [ authenticate, accessControl('admin') ], MeetingsController.getMeetingDetail);
 
 routes.post('/contact-us', UsersController.contactUs);
 routes.get('/get-profile', UsersController.getProfile);
