@@ -3,71 +3,69 @@ import merge from 'lodash/merge';
 
 // Default configuations applied to all environments
 const defaultConfig = {
-  env: process.env.NODE_ENV,
-  get envs() {
-    return {
-      test: process.env.NODE_ENV === 'test',
-      development: process.env.NODE_ENV === 'development',
-      production: process.env.NODE_ENV === 'production',
-    };
-  },
+	env: process.env.NODE_ENV,
+	get envs() {
+		return {
+			test: process.env.NODE_ENV === 'test',
+			development: process.env.NODE_ENV === 'development',
+			production: process.env.NODE_ENV === 'production'
+		};
+	},
 
-  version: require('../../package.json').version,
-  root: path.normalize(__dirname + '/../../..'),
-  port: process.env.PORT || 4567,
-  ip: process.env.IP || '0.0.0.0',
-  apiPrefix: '', // Could be /api/resource or /api/v2/resource
-  userRoles: ['guest', 'user', 'admin'],
+	version: require('../../package.json').version,
+	root: path.normalize(__dirname + '/../../..'),
+	port: process.env.PORT || 4567,
+	ip: process.env.IP || '0.0.0.0',
+	apiPrefix: '', // Could be /api/resource or /api/v2/resource
+	userRoles: [ 'guest', 'user', 'admin' ],
 
-  /**
+	/**
    * MongoDB configuration options
    */
-  mongo: {
-    seed: true,
-    options: {
-      db: {
-        safe: true,
-      },
-    },
-  },
+	mongo: {
+		seed: true,
+		options: {
+			db: {
+				safe: true
+			}
+		}
+	},
 
-  /**
+	/**
    * Security configuation options regarding sessions, authentication and hashing
    */
-  security: {
-    sessionSecret: process.env.SESSION_SECRET || 'i-am-the-secret-key',
-    sessionExpiration: process.env.SESSION_EXPIRATION || 60 * 60 * 24 * 7, // 1 week
-    saltRounds: process.env.SALT_ROUNDS || 12,
-  },
+	security: {
+		sessionSecret: process.env.SESSION_SECRET || 'i-am-the-secret-key',
+		sessionExpiration: process.env.SESSION_EXPIRATION || 60 * 60 * 24 * 7, // 1 week
+		saltRounds: process.env.SALT_ROUNDS || 12
+	}
 };
 
 // Environment specific overrides
 const environmentConfigs = {
-  development: {
-    mongo: {
-      uri: process.env.MONGO_URI ||
-      'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting',
-    },
-    security: {
-      saltRounds: 4,
-    },
-  },
-  test: {
-    port: 5678,
-    mongo: {
-      uri: process.env.MONGO_URI ||
-      'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting',
-    },
-    security: {
-      saltRounds: 4,
-    },
-  },
-  production: {
-    mongo: {
-      seed: false,
-      uri: process.env.MONGO_URI,
-    },
-  },
+	development: {
+		mongo: {
+			uri: process.env.MONGO_URI || 'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting'
+		},
+		security: {
+			saltRounds: 4
+		}
+	},
+	test: {
+		port: 5678,
+		mongo: {
+			uri: process.env.MONGO_URI || 'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting'
+		},
+		security: {
+			saltRounds: 4
+		}
+	},
+	production: {
+		mongo: {
+			seed: false,
+			uri: process.env.MONGO_URI
+		}
+	}
 };
 
 // Recursively merge configurations
