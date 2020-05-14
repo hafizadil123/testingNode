@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import socket from 'socket.io';
 let path = require('path');
 import cron from 'node-cron';
 import routes from './routes';
@@ -45,12 +46,19 @@ cron.schedule('* * * * *', () => {
 	events();
 	sendFeedbackEmailsToInvites();
 });
-app.listen(Constants.port, () => {
+let server = app.listen(Constants.port, () => {
 	// eslint-disable-next-line no-console
 	console.log(`
     Port: ${Constants.port}
     Env: ${app.get('env')}
   `);
+});
+
+//  create socket server
+let io = socket(server);
+
+io.on('connection', (socket) => {
+	console.log('connected with id: --', socket.id);
 });
 
 export default app;
