@@ -26,6 +26,14 @@ const MeetingSchema = new Schema(
 			type: String,
 			default: null
 		},
+		uId: {
+			type: String,
+			default: null
+		},
+		status: {
+			type: String,
+			default: null
+		},
 		endDatWithoutEncoding: {
 			type: String,
 			default: null

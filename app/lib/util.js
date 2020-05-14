@@ -97,7 +97,9 @@ export const getAttachment = async () => {
 						: filterObj.attendee.map(
 								(invite) =>
 									invite.params.EMAIL ? invite.params.EMAIL : invite.val.split('mailto:').join('')
-							)
+							),
+				status: filterObj.status,
+				uId: filterObj.uid
 				//location: filterObj.location.val ? filterObj.location.val : filterObj.location
 			};
 			//console.log('obj: 0-----', desiredObj);

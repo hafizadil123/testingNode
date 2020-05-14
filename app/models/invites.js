@@ -15,6 +15,10 @@ const InvitesSchema = new Schema(
 			type: Boolean,
 			default: false
 		},
+		uId: {
+			type: String,
+			default: null
+		},
 		meetingId: { type: Schema.Types.ObjectId, ref: 'Meetings' }
 	},
 	{
