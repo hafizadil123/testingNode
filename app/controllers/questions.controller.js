@@ -1,14 +1,19 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable new-cap */
+/* eslint-disable babel/new-cap */
+/* eslint-disable no-unused-vars */
+
 import BaseController from './base.controller';
 import Questions from '../models/questionAnswers';
 import Feedback from '../models/feedback';
 import Meeting from '../models/meetings';
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 import _ from 'lodash';
 class QuestionsController extends BaseController {
-	whitelist = [ 'text' ];
+	whitelist = ['text'];
 
 	// Middleware to populate post based on url param
-	_populate = async (req, res, next) => {
+	_populate = async(req, res, next) => {
 		const { meetingId } = req.query;
 
 		try {
@@ -50,11 +55,11 @@ class QuestionsController extends BaseController {
 		}
 	};
 
-	search = async (req, res, next) => {
+	search = async(req, res, next) => {
 		try {
 			const posts = await Questions.find({}).populate({
 				path: '_user',
-				select: '-posts -role'
+				select: '-posts -role',
 			});
 
 			res.json(posts);
@@ -67,7 +72,7 @@ class QuestionsController extends BaseController {
    * req.post is populated by middleware in routes.js
    */
 
-	fetch = async (req, res) => {
+	fetch = async(req, res) => {
 		// const userId = "5e14c1ff2824c72182d0417e";
 		// const userMeetings = await Meeting.find({ _user: userId });
 		const questionAnswers = await Questions.find({});
@@ -106,7 +111,7 @@ class QuestionsController extends BaseController {
    * req.user is populated by middleware in routes.js
    */
 
-	getSummary = async (req, res) => {
+	getSummary = async(req, res) => {
 		const userId = mongoose.Types.ObjectId(req.query.userId);
 		const summaryDeatils = await Meeting.aggregate([
 			{ $match: { _user: userId } },
@@ -118,28 +123,28 @@ class QuestionsController extends BaseController {
 						{
 							$match: {
 								$expr: {
-									$eq: [ '$meetingId', '$$meeting_id' ]
-								}
-							}
+									$eq: ['$meetingId', '$$meeting_id'],
+								},
+							},
 						},
 						{ $unwind: { path: '$feedbackResults' } },
 						{
 							$project: {
 								question_id: {
-									$toObjectId: '$feedbackResults.questionId'
+									$toObjectId: '$feedbackResults.questionId',
 								},
 								answer_id: {
-									$toObjectId: '$feedbackResults.answerId'
-								}
-							}
+									$toObjectId: '$feedbackResults.answerId',
+								},
+							},
 						},
 						{
 							$lookup: {
 								from: 'questionanswers',
 								localField: 'question_id',
 								foreignField: '_id',
-								as: 'qa_data'
-							}
+								as: 'qa_data',
+							},
 						},
 						{ $unwind: { path: '$qa_data' } },
 						{
@@ -148,32 +153,32 @@ class QuestionsController extends BaseController {
 									$filter: {
 										input: '$qa_data.answers',
 										as: 'item',
-										cond: { $eq: [ '$$item.id', '$answer_id' ] }
-									}
-								}
-							}
+										cond: { $eq: ['$$item.id', '$answer_id'] },
+									},
+								},
+							},
 						},
 						{ $unwind: { path: '$answer_data' } },
 						{
 							$group: {
 								_id: '',
-								weightage: { $avg: '$answer_data.weightage' }
-							}
-						}
+								weightage: { $avg: '$answer_data.weightage' },
+							},
+						},
 					],
-					as: 'feedback_data'
-				}
+					as: 'feedback_data',
+				},
 			},
 			{
-				$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true }
+				$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true },
 			},
 			{
 				$lookup: {
 					from: 'feedbacks',
 					localField: '_id',
 					foreignField: 'meetingId',
-					as: 'feedbacks'
-				}
+					as: 'feedbacks',
+				},
 			},
 			{
 				$project: {
@@ -181,22 +186,22 @@ class QuestionsController extends BaseController {
 					providedFeedbacks: {
 						$cond: {
 							if: {
-								$gt: [ { $size: '$feedbacks' }, 0 ]
+								$gt: [{ $size: '$feedbacks' }, 0],
 							},
 							then: { $size: '$feedbacks' },
-							else: 0
-						}
+							else: 0,
+						},
 					},
 					noFeedbacks: {
 						$cond: {
 							if: {
-								$gt: [ { $size: '$feedbacks' }, 0 ]
+								$gt: [{ $size: '$feedbacks' }, 0],
 							},
 							then: 0,
-							else: 1
-						}
-					}
-				}
+							else: 1,
+						},
+					},
+				},
 			},
 			{
 				$group: {
@@ -204,36 +209,36 @@ class QuestionsController extends BaseController {
 					averageWeightage: { $avg: '$weightage' },
 					providedFeedbacks: { $sum: '$providedFeedbacks' },
 					noFeedbacks: { $sum: '$noFeedbacks' },
-					totalMeetings: { $push: { _id: '$_id' } }
-				}
+					totalMeetings: { $push: { _id: '$_id' } },
+				},
 			},
 			{
 				$project: {
 					_id: false,
-					averageWeightage: { $ifNull: [ '$averageWeightage', 0 ] },
+					averageWeightage: { $ifNull: ['$averageWeightage', 0] },
 					providedFeedbacks: true,
 					noFeedbacks: true,
-					totalMeetings: { $size: '$totalMeetings' }
-				}
-			}
+					totalMeetings: { $size: '$totalMeetings' },
+				},
+			},
 		]);
 		if (summaryDeatils && summaryDeatils.length > 0) {
 			res.json({
 				noResponse: summaryDeatils[0].noFeedbacks,
 				allMeetings: summaryDeatils[0].totalMeetings,
 				allFeedback: summaryDeatils[0].providedFeedbacks,
-				avgScore: summaryDeatils[0].averageWeightage
+				avgScore: summaryDeatils[0].averageWeightage,
 			});
 		} else {
 			res.json({
 				noResponse: 0,
 				allMeetings: 0,
 				allFeedback: 0,
-				avgScore: 0
+				avgScore: 0,
 			});
 		}
 	};
-	create = async (req, res, next) => {
+	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
 		const object = {
 			question: 'Did you stay on topic or did the meeting veer off course?',
@@ -241,32 +246,32 @@ class QuestionsController extends BaseController {
 				{
 					id: new mongoose.Types.ObjectId(),
 					answer: 'it was ok - we covered some of what we needed to',
-					weightage: 60
+					weightage: 60,
 				},
 				{
 					id: new mongoose.Types.ObjectId(),
 					answer: 'It started ok, but then changed\t',
-					weightage: 40
+					weightage: 40,
 				},
 				{
 					id: new mongoose.Types.ObjectId(),
 					answer: 'Yes, it totally changed direction',
-					weightage: 20
+					weightage: 20,
 				},
 				{
 					id: new mongoose.Types.ObjectId(),
 					answer: 'we covered what we needed to, with some diversion',
-					weightage: 80
+					weightage: 80,
 				},
 				{
 					id: new mongoose.Types.ObjectId(),
 					answer: 'We stayed totally on the subject',
-					weightage: 100
-				}
-			]
+					weightage: 100,
+				},
+			],
 		};
 		const post = new Questions({
-			...object
+			...object,
 		});
 
 		try {
@@ -276,7 +281,7 @@ class QuestionsController extends BaseController {
 		}
 	};
 
-	getStatsQuestion = async (req, res) => {
+	getStatsQuestion = async(req, res) => {
 		const userId = mongoose.Types.ObjectId(req.query.userId);
 		try {
 			const result = await Questions.aggregate([
@@ -286,43 +291,43 @@ class QuestionsController extends BaseController {
 						let: { question_id: '$_id' },
 						pipeline: [
 							{
-								$unwind: { path: '$feedbackResults' }
+								$unwind: { path: '$feedbackResults' },
 							},
 							{
 								$project: {
 									_id: false,
 									answer_id: { $toObjectId: '$feedbackResults.answerId' },
 									question_id: { $toObjectId: '$feedbackResults.questionId' },
-									meeting_id: '$meetingId'
-								}
+									meeting_id: '$meetingId',
+								},
 							},
 							{
 								$lookup: {
 									from: 'meetings',
 									localField: 'meeting_id',
 									foreignField: '_id',
-									as: 'meetings'
-								}
+									as: 'meetings',
+								},
 							},
 							{
-								$unwind: { path: '$meetings' }
+								$unwind: { path: '$meetings' },
 							},
 							{
 								$match: {
 									$expr: {
 										$and: [
-											{ $eq: [ '$question_id', '$$question_id' ] },
-											{ $eq: [ '$meetings._user', userId ] }
-										]
-									}
-								}
-							}
+											{ $eq: ['$question_id', '$$question_id'] },
+											{ $eq: ['$meetings._user', userId] },
+										],
+									},
+								},
+							},
 						],
-						as: 'feedbacks'
-					}
+						as: 'feedbacks',
+					},
 				},
 				{
-					$unwind: { path: '$answers' }
+					$unwind: { path: '$answers' },
 				},
 				{
 					$project: {
@@ -332,16 +337,16 @@ class QuestionsController extends BaseController {
 									input: '$feedbacks',
 									as: 'feedback',
 									cond: {
-										$eq: [ '$$feedback.answer_id', '$answers.id' ]
-									}
-								}
-							}
+										$eq: ['$$feedback.answer_id', '$answers.id'],
+									},
+								},
+							},
 						},
 						answer_id: '$answers.id',
 						answerText: '$answers.answer',
 						answerWeightage: '$answers.weightage',
-						questionText: '$question'
-					}
+						questionText: '$question',
+					},
 				},
 				{
 					$group: {
@@ -352,20 +357,20 @@ class QuestionsController extends BaseController {
 								answerId: '$answer_id',
 								answerText: '$answerText',
 								answerCount: '$answerCount',
-								weightage: '$answerWeightage'
-							}
+								weightage: '$answerWeightage',
+							},
 						},
 						totalCount: { $sum: '$answerCount' },
-						questionAnswered: { $push: { _id: '$_id' } }
-					}
+						questionAnswered: { $push: { _id: '$_id' } },
+					},
 				},
 				{
-					$unwind: { path: '$answers' }
+					$unwind: { path: '$answers' },
 				},
 				{
 					$sort: {
-						'answers.weightage': -1
-					}
+						'answers.weightage': -1,
+					},
 				},
 				{
 					$group: {
@@ -379,26 +384,26 @@ class QuestionsController extends BaseController {
 								count: '$answers.answerCount',
 								percentage: {
 									$cond: [
-										{ $eq: [ '$totalCount', 0 ] },
+										{ $eq: ['$totalCount', 0] },
 										0,
 										{
-											$multiply: [ { $divide: [ '$answers.answerCount', '$totalCount' ] }, 100 ]
-										}
-									]
-								}
-							}
-						}
-					}
+											$multiply: [{ $divide: ['$answers.answerCount', '$totalCount'] }, 100],
+										},
+									],
+								},
+							},
+						},
+					},
 				},
 				{
 					$sort: {
-						'answers.weightage': -1
-					}
-				}
+						'answers.weightage': -1,
+					},
+				},
 			]);
 			res.json(result);
 		} catch (err) {
-			console.log('err', err);
+			// console.log('err', err);
 		}
 
 		// console.log('sdfjdsalkfjkldsajfldsakf', result);
@@ -410,7 +415,7 @@ class QuestionsController extends BaseController {
 		// }
 	};
 
-	delete = async (req, res, next) => {
+	delete = async(req, res, next) => {
 		/**
      * Ensure the user attempting to delete the post owns the post
      *

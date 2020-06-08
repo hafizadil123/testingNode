@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
@@ -5,15 +6,15 @@ const QuestionAnswersSchema = new Schema(
 	{
 		question: {
 			type: String,
-			required: true
+			required: true,
 		},
 		answers: {
-			type: [ {} ],
-			default: []
-		}
+			type: [{}],
+			default: [],
+		},
 	},
 	{
-		timestamps: true
+		timestamps: true,
 	}
 );
 

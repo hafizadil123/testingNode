@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -5,7 +6,7 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import socket from 'socket.io';
-let path = require('path');
+import path from 'path';
 import cron from 'node-cron';
 import routes from './routes';
 import Constants from './config/constants';
@@ -37,7 +38,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride());
 
 // Mount public routes
-//app.use('/public', express.static(`${__dirname}/public`));
+// app.use('/public', express.static(`${__dirname}/public`));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount API routes
@@ -58,6 +59,7 @@ let server = app.listen(Constants.port, () => {
 let io = socket(server);
 
 io.on('connection', (socket) => {
+	// eslint-disable-next-line no-console
 	console.log('connected with id: --', socket.id);
 });
 

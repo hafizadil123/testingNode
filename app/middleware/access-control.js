@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import authenticate from './authenticate';
 import Constants from '../config/constants';
 

@@ -1,14 +1,15 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable no-unused-vars */
+
 import BaseController from './base.controller';
 import ContactUs from '../models/contactUs';
+import Post from '../models/post';
 
 class ContactUSController extends BaseController {
-
-  whitelist = [
-    'text',
-  ];
+  whitelist = ['text'];
 
    // Middleware to populate post based on url param
-  _populate = async (req, res, next) => {
+  _populate = async(req, res, next) => {
     const { id } = req.params;
 
     try {
@@ -28,7 +29,7 @@ class ContactUSController extends BaseController {
     }
   }
 
-  search = async (req, res, next) => {
+  search = async(req, res, next) => {
     try {
       const posts =
         await Post.find({})
@@ -52,7 +53,7 @@ class ContactUSController extends BaseController {
    * req.user is populated by middleware in routes.js
    */
 
-  create = async (req, res, next) => {
+  create = async(req, res, next) => {
     const params = this.filterParams(req.body, this.whitelist);
 
     const post = new Post({
@@ -67,7 +68,7 @@ class ContactUSController extends BaseController {
     }
   }
 
-  delete = async (req, res, next) => {
+  delete = async(req, res, next) => {
     /**
      * Ensure the user attempting to delete the post owns the post
      *

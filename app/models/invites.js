@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
@@ -5,24 +6,24 @@ const InvitesSchema = new Schema(
 	{
 		invitesEmail: {
 			type: String,
-			required: true
+			required: true,
 		},
 		isEmailSent: {
 			type: Boolean,
-			default: 0 // email not sent represented by 0
+			default: 0, // email not sent represented by 0
 		},
 		isFeedbackGiven: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		uId: {
 			type: String,
-			default: null
+			default: null,
 		},
-		meetingId: { type: Schema.Types.ObjectId, ref: 'Meetings' }
+		meetingId: { type: Schema.Types.ObjectId, ref: 'Meetings' },
 	},
 	{
-		timestamps: true
+		timestamps: true,
 	}
 );
 
