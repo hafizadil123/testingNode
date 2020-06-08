@@ -74,7 +74,7 @@ class FeedbackController extends BaseController {
 			inviteObject.isFeedbackGiven = true;
 			await inviteObject.save();
 			const meeting = await Meeting.findById({ _id: req.body.meetingId });
-			await feedbackOrganizerEmail(meeting.organizer);
+			await feedbackOrganizerEmail(meeting.organizer, meeting.subject[0]);
 			res.status(201).json({ message: 'Thank you, your feedback is submitted succesfully!' });
 		} catch (err) {
 			next(err);

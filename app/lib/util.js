@@ -138,7 +138,7 @@ export const sendRegistrationEmail = async(sendTo) => {
 	});
 };
 
-export const feedbackOrganizerEmail = async(sendTo) => {
+export const feedbackOrganizerEmail = async(sendTo, sub) => {
 	let transport = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -149,7 +149,7 @@ export const feedbackOrganizerEmail = async(sendTo) => {
 	const message = {
 		from: 'havea@goodmeeting.today', // Sender address
 		to: sendTo, // List of recipients
-		subject: 'You Have A New Feedback On Your Meeting!', // Subject line
+		subject: `You Have A New Feedback On Your Meeting ${sub}`, // Subject line
 		html: feedbackOrganizerEmailTemplate,
 	};
 	transport.sendMail(message, function(err, info) {
