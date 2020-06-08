@@ -149,8 +149,8 @@ export const feedbackOrganizerEmail = async(sendTo, sub) => {
 	const message = {
 		from: 'havea@goodmeeting.today', // Sender address
 		to: sendTo, // List of recipients
-		subject: `You Have A New Feedback On Your Meeting ${sub}`, // Subject line
-		html: feedbackOrganizerEmailTemplate,
+		subject: `You Have A New Feedback On Your Meeting!`, // Subject line
+		html: feedbackOrganizerEmailTemplate(sub),
 	};
 	transport.sendMail(message, function(err, info) {
 		if (err) {
