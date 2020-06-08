@@ -1,47 +1,48 @@
+/* eslint-disable linebreak-style */
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const MeetingSchema = new Schema(
 	{
 		subject: {
-			type: [ String ],
-			required: true
+			type: [String],
+			required: true,
 		},
 		organizer: {
 			type: String,
-			required: true
+			required: true,
 		},
 		invites: {
 			type: String,
-			required: true
+			required: true,
 		},
 		dateStart: {
 			type: String,
-			default: Date.now
+			default: Date.now,
 		},
 		dateEnd: {
-			type: String
+			type: String,
 		},
 		location: {
 			type: String,
-			default: null
+			default: null,
 		},
 		uId: {
 			type: String,
-			default: null
+			default: null,
 		},
 		status: {
 			type: String,
-			default: null
+			default: null,
 		},
 		endDatWithoutEncoding: {
 			type: String,
-			default: null
+			default: null,
 		},
-		_user: { type: Schema.Types.ObjectId, ref: 'User' }
+		_user: { type: Schema.Types.ObjectId, ref: 'User' },
 	},
 	{
-		timestamps: true
+		timestamps: true,
 	}
 );
 

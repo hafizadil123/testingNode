@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import Constants from '../config/constants';
 
 export default function errorHandler(err, req, res, next) {
@@ -6,7 +7,7 @@ export default function errorHandler(err, req, res, next) {
 	}
 
 	const error = {
-		message: err.message || 'Internal Server Error.'
+		message: err.message || 'Internal Server Error.',
 	};
 
 	if (Constants.envs.development) {

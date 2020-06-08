@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import path from 'path';
 import merge from 'lodash/merge';
 
@@ -8,7 +9,7 @@ const defaultConfig = {
 		return {
 			test: process.env.NODE_ENV === 'test',
 			development: process.env.NODE_ENV === 'development',
-			production: process.env.NODE_ENV === 'production'
+			production: process.env.NODE_ENV === 'production',
 		};
 	},
 
@@ -17,7 +18,7 @@ const defaultConfig = {
 	port: process.env.PORT || 4567,
 	ip: process.env.IP || '0.0.0.0',
 	apiPrefix: '', // Could be /api/resource or /api/v2/resource
-	userRoles: [ 'guest', 'user', 'admin' ],
+	userRoles: ['guest', 'user', 'admin'],
 
 	/**
    * MongoDB configuration options
@@ -26,9 +27,9 @@ const defaultConfig = {
 		seed: true,
 		options: {
 			db: {
-				safe: true
-			}
-		}
+				safe: true,
+			},
+		},
 	},
 
 	/**
@@ -37,35 +38,35 @@ const defaultConfig = {
 	security: {
 		sessionSecret: process.env.SESSION_SECRET || 'i-am-the-secret-key',
 		sessionExpiration: process.env.SESSION_EXPIRATION || 60 * 60 * 24 * 7, // 1 week
-		saltRounds: process.env.SALT_ROUNDS || 12
-	}
+		saltRounds: process.env.SALT_ROUNDS || 12,
+	},
 };
 
 // Environment specific overrides
 const environmentConfigs = {
 	development: {
 		mongo: {
-			uri: process.env.MONGO_URI || 'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting'
+			uri: process.env.MONGO_URI || 'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting',
 		},
 		security: {
-			saltRounds: 4
-		}
+			saltRounds: 4,
+		},
 	},
 	test: {
 		port: 5678,
 		mongo: {
-			uri: process.env.MONGO_URI || 'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting'
+			uri: process.env.MONGO_URI || 'mongodb://goodMeetingAdmin:G0odM33t1ng333@18.218.59.74:27017/good-meeting',
 		},
 		security: {
-			saltRounds: 4
-		}
+			saltRounds: 4,
+		},
 	},
 	production: {
 		mongo: {
 			seed: false,
-			uri: process.env.MONGO_URI
-		}
-	}
+			uri: process.env.MONGO_URI,
+		},
+	},
 };
 
 // Recursively merge configurations

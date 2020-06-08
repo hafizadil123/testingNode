@@ -1,8 +1,9 @@
+/* eslint-disable linebreak-style */
 import BaseController from './base.controller';
 import User from '../models/user';
 
 class AuthController extends BaseController {
-	login = async (req, res, next) => {
+	login = async(req, res, next) => {
 		const { email, password } = req.body;
 
 		try {
@@ -22,7 +23,7 @@ class AuthController extends BaseController {
 					avatar: user.avatar,
 					name: user.fullName,
 					email: user.email,
-					role: user.role
+					role: user.role,
 				});
 		} catch (err) {
 			next(err);

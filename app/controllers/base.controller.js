@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 class BaseController {
 	filterParams(params, whitelist) {
 		const filtered = {};
@@ -16,7 +17,7 @@ class BaseController {
 		}
 
 		const formatted = {
-			message: err.message
+			message: err.message,
 		};
 
 		if (err.errors) {

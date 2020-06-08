@@ -1,11 +1,12 @@
+/* eslint-disable linebreak-style */
 import BaseController from './base.controller';
 import Post from '../models/post';
 
 class PostController extends BaseController {
-	whitelist = [ 'text' ];
+	whitelist = ['text'];
 
 	// Middleware to populate post based on url param
-	_populate = async (req, res, next) => {
+	_populate = async(req, res, next) => {
 		const { id } = req.params;
 
 		try {
@@ -25,7 +26,7 @@ class PostController extends BaseController {
 		}
 	};
 
-	search = async (req, res, next) => {
+	search = async(req, res, next) => {
 		try {
 			const posts = await Post.find({}).populate({ path: '_user', select: '-posts -role' });
 
@@ -47,12 +48,12 @@ class PostController extends BaseController {
    * req.user is populated by middleware in routes.js
    */
 
-	create = async (req, res, next) => {
+	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
 
 		const post = new Post({
 			...params,
-			_user: req.currentUser._id
+			_user: req.currentUser._id,
 		});
 
 		try {
@@ -62,7 +63,7 @@ class PostController extends BaseController {
 		}
 	};
 
-	delete = async (req, res, next) => {
+	delete = async(req, res, next) => {
 		/**
      * Ensure the user attempting to delete the post owns the post
      *

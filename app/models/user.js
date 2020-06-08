@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -11,28 +12,28 @@ const UserSchema = new Schema(
 		email: {
 			type: String,
 			lowercase: true,
-			required: [ true, 'Email is required' ],
+			required: [true, 'Email is required'],
 			validate: {
 				validator(email) {
 					// eslint-disable-next-line max-len
 					const emailRegex = /^[-a-z0-9%S_+]+(\.[-a-z0-9%S_+]+)*@(?:[a-z0-9-]{1,63}\.){1,125}[a-z]{2,63}$/i;
 					return emailRegex.test(email);
 				},
-				message: '{VALUE} is not a valid email.'
-			}
+				message: '{VALUE} is not a valid email.',
+			},
 		},
 		password: {
 			type: String,
-			required: [ true, 'Password is required.' ]
+			required: [true, 'Password is required.'],
 		},
 		avatar: String,
 		role: {
 			type: String,
-			default: 'user'
-		}
+			default: 'user',
+		},
 	},
 	{
-		timestamps: true
+		timestamps: true,
 	}
 );
 
@@ -45,7 +46,7 @@ UserSchema.set('toJSON', {
 		delete obj.__v;
 		// delete obj.password;
 		return obj;
-	}
+	},
 });
 
 // Ensure email has not been taken
@@ -134,7 +135,7 @@ UserSchema.methods = {
    */
 	generateToken() {
 		return jwt.sign({ _id: this._id }, Constants.security.sessionSecret, {
-			expiresIn: Constants.security.sessionExpiration
+			expiresIn: Constants.security.sessionExpiration,
 		});
 	},
 
@@ -148,7 +149,7 @@ UserSchema.methods = {
    */
 	_hashPassword(password, saltRounds = Constants.security.saltRounds, callback) {
 		return bcrypt.hash(password, saltRounds, callback);
-	}
+	},
 };
 
 const UserModel = mongoose.model('User', UserSchema);

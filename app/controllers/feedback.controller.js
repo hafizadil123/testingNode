@@ -1,3 +1,6 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable new-cap */
+/* eslint-disable no-unused-vars */
 /* eslint-disable babel/new-cap */
 /* eslint-disable prefer-spread */
 /* eslint-disable no-undef */
@@ -6,13 +9,14 @@ import Feedback from '../models/feedback';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
 import QuestionAnswers from '../models/questionAnswers';
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import { feedbackOrganizerEmail } from '../lib/util';
 
 class FeedbackController extends BaseController {
-	whitelist = [ 'text', 'feedbackResults', 'inviteName', 'inviteeId', 'isGood', 'meetingId' ];
+	whitelist = ['text', 'feedbackResults', 'inviteName', 'inviteeId', 'isGood', 'meetingId'];
 
 	// Middleware to populate post based on url param
-	_populate = async (req, _res, next) => {
+	_populate = async(req, _res, next) => {
 		const { id } = req.params;
 
 		try {
@@ -32,7 +36,7 @@ class FeedbackController extends BaseController {
 		}
 	};
 
-	search = async (_req, res, next) => {
+	search = async(_req, res, next) => {
 		try {
 			const posts = await Feedback.find({}).populate({ path: '_user', select: '-posts -role' });
 
@@ -54,14 +58,14 @@ class FeedbackController extends BaseController {
    * req.user is populated by middleware in routes.js
    */
 
-	create = async (req, res, next) => {
+	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
 		const isAlreadyExist = await Feedback.findOne({ inviteeId: req.body.inviteeId });
 		if (isAlreadyExist) {
 			return res.status(400).json({ message: 'you already submitted feedback of this meeting' });
 		}
 		const feedback = new Feedback({
-			...params
+			...params,
 		});
 
 		try {
@@ -69,13 +73,15 @@ class FeedbackController extends BaseController {
 			const inviteObject = await Invites.findById(req.body.inviteeId);
 			inviteObject.isFeedbackGiven = true;
 			await inviteObject.save();
+			const meeting = await Meeting.findById({ _id: req.body.meetingId });
+			await feedbackOrganizerEmail(meeting.organizer);
 			res.status(201).json({ message: 'Thank you, your feedback is submitted succesfully!' });
 		} catch (err) {
 			next(err);
 		}
 	};
 
-	feedbackStats = async (req, res, _next) => {
+	feedbackStats = async(req, res, _next) => {
 		const noResponse = await Meeting.find({ isFeedbackGiven: false });
 		const allFeedback = await Feedback.find({});
 		const allMeetings = await Meeting.find({});
@@ -92,29 +98,29 @@ class FeedbackController extends BaseController {
 						{
 							$match: {
 								$expr: {
-									$eq: [ '$meetingId', '$$meeting_id' ]
-								}
-							}
+									$eq: ['$meetingId', '$$meeting_id'],
+								},
+							},
 						},
 						{ $unwind: { path: '$feedbackResults' } },
 						{
 							$project: {
 								question_id: {
-									$toObjectId: '$feedbackResults.questionId'
+									$toObjectId: '$feedbackResults.questionId',
 								},
 								answer_id: {
-									$toObjectId: '$feedbackResults.answerId'
+									$toObjectId: '$feedbackResults.answerId',
 								},
-								isGood: '$isGood'
-							}
+								isGood: '$isGood',
+							},
 						},
 						{
 							$lookup: {
 								from: 'questionanswers',
 								localField: 'question_id',
 								foreignField: '_id',
-								as: 'qa_data'
-							}
+								as: 'qa_data',
+							},
 						},
 						{ $unwind: { path: '$qa_data' } },
 						{
@@ -123,11 +129,11 @@ class FeedbackController extends BaseController {
 									$filter: {
 										input: '$qa_data.answers',
 										as: 'item',
-										cond: { $eq: [ '$$item.id', '$answer_id' ] }
-									}
+										cond: { $eq: ['$$item.id', '$answer_id'] },
+									},
 								},
-								isGood: '$isGood'
-							}
+								isGood: '$isGood',
+							},
 						},
 						{ $unwind: { path: '$answer_data' } },
 						{
@@ -135,40 +141,40 @@ class FeedbackController extends BaseController {
 								_id: '',
 								weightage: { $avg: '$answer_data.weightage' },
 								overall_rating: {
-									$addToSet: '$isGood'
-								}
-							}
-						}
+									$addToSet: '$isGood',
+								},
+							},
+						},
 					],
-					as: 'feedback_data'
-				}
+					as: 'feedback_data',
+				},
 			},
 			{
-				$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true }
+				$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true },
 			},
 			{
 				$group: {
 					_id: '',
 					averageWeightage: { $avg: '$feedback_data.weightage' },
 					overall_rating: { $addToSet: '$feedback_data.overall_rating' },
-					total_meetings: { $push: '$createdAt' }
-				}
+					total_meetings: { $push: '$createdAt' },
+				},
 			},
 			{
 				$project: {
 					_id: false,
 					averageWeightage: true,
 					overall_rating: true,
-					total_meetings: true
-				}
+					total_meetings: true,
+				},
 			},
 			{ $unwind: { path: '$overall_rating', preserveNullAndEmptyArrays: true } },
 			{
 				$project: {
-					averageWeightage: { $ifNull: [ '$averageWeightage', 0 ] },
+					averageWeightage: { $ifNull: ['$averageWeightage', 0] },
 					total_meetings: true,
-					overall_rating: { $ifNull: [ '$overall_rating', [] ] }
-				}
+					overall_rating: { $ifNull: ['$overall_rating', []] },
+				},
 			},
 			{
 				$project: {
@@ -179,38 +185,38 @@ class FeedbackController extends BaseController {
 								input: '$total_meetings',
 								as: 'input',
 								cond: {
-									$and: [ { $gte: [ '$$input', new Date(new Date() - 7 * 60 * 60 * 24 * 1000) ] } ]
-								}
-							}
-						}
+									$and: [{ $gte: ['$$input', new Date(new Date() - 7 * 60 * 60 * 24 * 1000)] }],
+								},
+							},
+						},
 					},
 					positiveReviews: {
 						$size: {
 							$filter: {
 								input: '$overall_rating',
 								as: 'input',
-								cond: { $and: [ { $eq: [ '$$input', true ] } ] }
-							}
-						}
+								cond: { $and: [{ $eq: ['$$input', true] }] },
+							},
+						},
 					},
 					negativeReviews: {
 						$size: {
 							$filter: {
 								input: '$overall_rating',
 								as: 'input',
-								cond: { $and: [ { $eq: [ '$$input', false ] } ] }
-							}
-						}
-					}
-				}
+								cond: { $and: [{ $eq: ['$$input', false] }] },
+							},
+						},
+					},
+				},
 			},
 			{
 				$group: {
 					_id: '$averageWeightage',
 					positiveReviews: { $sum: '$positiveReviews' },
 					negativeReviews: { $sum: '$negativeReviews' },
-					totalMeetings: { $first: '$totalMeetings' }
-				}
+					totalMeetings: { $first: '$totalMeetings' },
+				},
 			},
 			{
 				$project: {
@@ -218,19 +224,19 @@ class FeedbackController extends BaseController {
 					averageWeightage: '$_id',
 					positiveReviews: true,
 					negativeReviews: true,
-					totalMeetings: true
-				}
-			}
+					totalMeetings: true,
+				},
+			},
 		]);
 		res.json({
 			positiveReviews: avg[0].positiveReviews,
 			negativeReviews: avg[0].negativeReviews,
 			avgScore: avg[0].averageWeightage.toFixed(0),
-			totalMeeting: avg[0].totalMeetings
+			totalMeeting: avg[0].totalMeetings,
 		});
 	};
 
-	delete = async (req, res, next) => {
+	delete = async(req, res, next) => {
 		/**
      * Ensure the user attempting to delete the post owns the post
      *

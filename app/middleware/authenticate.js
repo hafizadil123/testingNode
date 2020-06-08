@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import Constants from '../config/constants';
@@ -6,7 +7,7 @@ const { sessionSecret } = Constants.security;
 
 export default function authenticate(req, res, next) {
 	const { authorization } = req.headers;
-	jwt.verify(authorization, sessionSecret, async (err, decoded) => {
+	jwt.verify(authorization, sessionSecret, async(err, decoded) => {
 		if (err) {
 			return res.sendStatus(401);
 		}

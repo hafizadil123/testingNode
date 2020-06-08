@@ -1,3 +1,7 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable max-len */
+/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable no-unused-vars */
 /* eslint-disable prefer-spread */
 import BaseController from './base.controller';
 import Meeting from '../models/meetings';
@@ -6,10 +10,10 @@ import Feedback from '../models/feedback';
 import QuestionAnswers from '../models/questionAnswers';
 import moment from 'moment';
 class MeetingsController extends BaseController {
-	whitelist = [ 'text' ];
+	whitelist = ['text'];
 
 	// Middleware to populate post based on url param
-	_populate = async (req, res, next) => {
+	_populate = async(req, res, next) => {
 		const { meetingId } = req.query;
 		let result;
 		try {
@@ -55,7 +59,7 @@ class MeetingsController extends BaseController {
 				noResponse,
 				avgMeetingScore,
 				goodMeeting: gooMeeting.length,
-				badMeeting: badMeeting.length
+				badMeeting: badMeeting.length,
 			});
 		} catch (err) {
 			err.status = err.name === 'CastError' ? 404 : 500;
@@ -64,11 +68,11 @@ class MeetingsController extends BaseController {
 	};
 
 	// Get Meetings Card Data By Admin (Admin Specific Function)
-	getInviteeDetail = async (req, res, next) => {
+	getInviteeDetail = async(req, res, next) => {
 		const { meetingId } = req.query;
 
 		const invitees = await Invite.find({ meetingId: meetingId });
-		const score = await this.getMeetingAvg(meetingId);
+		const score = await this.getMeetingAvg(meetingId, res);
 		if (!invitees) {
 			return res.status(400).json({ message: 'no invitees found!' });
 		}
@@ -79,14 +83,14 @@ class MeetingsController extends BaseController {
 				invitesEmail: item.invitesEmail,
 				date: moment(item.createdAt).format('LL'),
 				score: score,
-				isFeedbackGiven: item.isFeedbackGiven
+				isFeedbackGiven: item.isFeedbackGiven,
 			};
 			return dataArr.push(obj);
 		});
 		return res.status(200).json({ message: 'success', invitees: dataArr });
 	};
 	// get invitee detail helper function
-	getMeetingAvg = async (meetingId) => {
+	getMeetingAvg = async(meetingId, res) => {
 		const meetings = await Meeting.findById({ _id: meetingId });
 		let result;
 		if (!meetings) {
@@ -122,12 +126,12 @@ class MeetingsController extends BaseController {
 	};
 
 	// Get Meetings Card Data By Admin (Admin Specific Function)
-	getMeetingsCardData = async (req, res, next) => {
+	getMeetingsCardData = async(req, res, next) => {
 		const tadayDate = new Date();
 		const compDate = moment(tadayDate).subtract('7', 'days');
 
 		const thisWeekMeetings = await Meeting.find({
-			$and: [ { createdAt: { $gte: new Date(compDate), $lte: new Date(tadayDate) } } ]
+			$and: [{ createdAt: { $gte: new Date(compDate), $lte: new Date(tadayDate) } }],
 		}).count();
 		const totalMeetings = await Meeting.find({}).count();
 		const totalFeedbacks = await Feedback.find({}).count();
@@ -139,17 +143,17 @@ class MeetingsController extends BaseController {
 			thisWeekMeetings: thisWeekMeetings,
 			totalMeetings: totalMeetings,
 			totalFeedbacks: totalFeedbacks,
-			totalInvitees: totalInvitees
+			totalInvitees: totalInvitees,
 		};
 
 		return res.status(200).json({ message: 'success', meetings: responseObj });
 	};
 
-	search = async (_req, res, next) => {
+	search = async(_req, res, next) => {
 		try {
 			const posts = await Meeting.find({}).populate({
 				path: '_user',
-				select: '-posts -role'
+				select: '-posts -role',
 			});
 
 			res.json(posts);
@@ -162,13 +166,12 @@ class MeetingsController extends BaseController {
    * req.post is populated by middleware in routes.js
    */
 
-	fetch = async (req, res, _next) => {
+	fetch = async(req, res, _next) => {
 		const userId = req.query.userId;
 		const userMeetings = await Meeting.find({ _user: userId }).populate('_user').sort({ createdAt: -1 });
 		// const members = userMeetings.map((item) => item.invites.split(',').length);
-
-		//  userMeetings me sari ek user ki meetings mil rahi hain... meny us meeting kitny members r kitny bndo ny feedback
-		const getMembersArray = userMeetings.map(async (item) => await this.getMembers(item._id));
+     	//  userMeetings me sari ek user ki meetings mil rahi hain... meny us meeting kitny members r kitny bndo ny feedback
+		const getMembersArray = userMeetings.map(async(item) => await this.getMembers(item._id));
 		const result = Promise.all(getMembersArray);
 		result.then((data) => {
 			const final = this.getData(userMeetings, data);
@@ -180,13 +183,13 @@ class MeetingsController extends BaseController {
 		return userMeetings.map((meeting, index) => {
 			return {
 				meeting,
-				...memberData[index]
+				...memberData[index],
 			};
 		});
 	};
 
 	// Get All Meetings By Admin (Admin Specific Function)
-	getMeetings = async (req, res, next) => {
+	getMeetings = async(req, res, next) => {
 		const meetings = await Meeting.find({});
 		if (!meetings) {
 			return res.status(400).json({ message: 'no meeting found!' });
@@ -200,16 +203,16 @@ class MeetingsController extends BaseController {
 	// Get meetings helper function
 
 	getFeedbackCount = (meetings) => {
-		return meetings.map(async (data) => {
-			const invite = await Invite.find({ $and: [ { isFeedbackGiven: true }, { meetingId: data._id } ] }).count();
+		return meetings.map(async(data) => {
+			const invite = await Invite.find({ $and: [{ isFeedbackGiven: true }, { meetingId: data._id }] }).count();
 			const obj = {
 				_id: data._id,
 				subject: data.subject,
 				organizer: data.organizer,
-				//date: moment(data.createdAt).format('LL'),
+				// date: moment(data.createdAt).format('LL'),
 				dateEnd: data.dateEnd,
 				inviteesCount: data.invites.split(',').length,
-				feedbacksCount: invite
+				feedbacksCount: invite,
 			};
 			return obj;
 		});
@@ -217,7 +220,7 @@ class MeetingsController extends BaseController {
 
 	// Get Meetings Detail By Admin (Admin Specific Function)
 
-	getMeetingDetail = async (req, res, next) => {
+	getMeetingDetail = async(req, res, next) => {
 		const { meetingId } = req.query;
 		let result;
 		try {
@@ -261,7 +264,7 @@ class MeetingsController extends BaseController {
 				noResponse: noResponse,
 				members: members,
 				goodMeeting: gooMeeting.length,
-				badMeeting: badMeeting.length
+				badMeeting: badMeeting.length,
 			};
 			return res.status(200).json({ message: 'success', meetingDetail: responseObj });
 			// res.json({
@@ -280,7 +283,7 @@ class MeetingsController extends BaseController {
 		}
 	};
 
-	getMembers = async (id) => {
+	getMembers = async(id) => {
 		const meetingId = id;
 		// const meetingId = '5dffad06a9d36afc546e5f6d';
 		const members = await Meeting.findOne({ _id: meetingId });
@@ -288,23 +291,23 @@ class MeetingsController extends BaseController {
 		const feedback = await Feedback.find({ meetingId: meetingId });
 		const membersFeedback = {
 			members: memberCount.filter((item) => item).length,
-			feebackCount: feedback.length
+			feebackCount: feedback.length,
 		};
 		return membersFeedback;
 	};
 
-	getFeedbacks = async () => {};
+	getFeedbacks = async() => {};
 
 	/**
    * req.user is populated by middleware in routes.js
    */
 
-	create = async (req, res, next) => {
+	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
 
 		const post = new Meeting({
 			...params,
-			_user: req.currentUser._id
+			_user: req.currentUser._id,
 		});
 
 		try {
@@ -314,7 +317,7 @@ class MeetingsController extends BaseController {
 		}
 	};
 
-	delete = async (req, res, next) => {
+	delete = async(req, res, next) => {
 		/**
      * Ensure the user attempting to delete the post owns the post
      *

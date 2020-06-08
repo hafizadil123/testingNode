@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 // import Imap from 'imap';
 // Imap.inspect = require('util').inspect;
@@ -6,7 +8,7 @@
 let Promise = require('bluebird');
 const dateFormat = require('dateformat');
 Promise.longStackTraces();
-//import ical from 'cal-parser';
+// import ical from 'cal-parser';
 import { findUserIdByEmail, getAttachment } from './util.js';
 import User from '../models/user';
 import { formatedDate } from './util';
@@ -19,18 +21,18 @@ let imapConfig = {
 	password: 'S4v3T1m3',
 	host: 'imap.gmail.com',
 	port: 993,
-	tls: true
+	tls: true,
 };
 
-export const events = async (req, res) => {
-	/////////////////////////////----My Code Starts-----///////////////////////////////////////////
+export const events = async(req, res) => {
+	// ///////////////////////////----My Code Starts-----///////////////////////////////////////////
 	const emailFetchedData = await getAttachment();
 	console.log('data: ---', await emailFetchedData);
 
-	//emailFetchedData.length === 0 ||
+	// emailFetchedData.length === 0 ||
 	emailFetchedData === 'Error' || emailFetchedData === undefined || emailFetchedData === 'undefined'
 		? console.log('No Email Found')
-		: emailFetchedData.map(async (data) => {
+		: emailFetchedData.map(async(data) => {
 				if ((await data) !== undefined) {
 					const userId = await findUserId(data.organizer);
 					if (userId) {
@@ -48,14 +50,14 @@ export const events = async (req, res) => {
 											.join(','),
 							dateStart: moment(data.dateStart).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
 							dateEnd: moment(data.dateEnd).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
-							//location: data.location,
+							// location: data.location,
 							endDatWithoutEncoding: data.dateEnd,
 							status: data.status,
 							uId: data.uId,
-							_user: userId
+							_user: userId,
 						};
 						const updateMeetings = new Meetings({
-							...mapData
+							...mapData,
 						});
 						updateDataInModels(updateMeetings);
 					}
@@ -66,7 +68,7 @@ const findUserId = (item) => {
 	const id = findUserIdByEmail(item);
 	return id;
 };
-const updateDataInModels = async (data) => {
+const updateDataInModels = async(data) => {
 	// remove cancelled meeting if it exist
 	const deletMeeting = await Meetings.findOneAndDelete({ uId: data.uId });
 	if (deletMeeting) {
@@ -85,10 +87,10 @@ const updateDataInModels = async (data) => {
 				const mapInvitesData = {
 					invitesEmail: item,
 					meetingId: meetingsAdded._id,
-					uId: data.uId
+					uId: data.uId,
 				};
 				const updateInvites = new Invites({
-					...mapInvitesData
+					...mapInvitesData,
 				});
 				updateInvites.save();
 			} else {
