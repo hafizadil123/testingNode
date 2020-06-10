@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable max-len */
 /* eslint-disable new-cap */
 /* eslint-disable no-unused-vars */
 /* eslint-disable babel/new-cap */
@@ -8,6 +9,7 @@ import BaseController from './base.controller';
 import Feedback from '../models/feedback';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
+import moment from 'moment';
 import QuestionAnswers from '../models/questionAnswers';
 import mongoose from 'mongoose';
 import { feedbackOrganizerEmail } from '../lib/util';
@@ -60,6 +62,7 @@ class FeedbackController extends BaseController {
 
 	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
+		const todayDate = new Date();
 		const isAlreadyExist = await Feedback.findOne({ inviteeId: req.body.inviteeId });
 		if (isAlreadyExist) {
 			return res.status(400).json({ message: 'you already submitted feedback of this meeting' });
@@ -69,12 +72,21 @@ class FeedbackController extends BaseController {
 		});
 
 		try {
+			const meeting = await Meeting.findById({ _id: req.body.meetingId });
+		const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
+		if (dateDiff > 7) {
+			return res.status(400).json({ message: 'You cannot provide feedback to this meeting now as you can only provide feedback within 7 days of meeting' });
+		}
+			if (meeting.isFeedback) {
+				return res.status(400).json({ message: 'you already submitted feedback of this meeting' });
+			}
 			await feedback.save();
 			const inviteObject = await Invites.findById(req.body.inviteeId);
 			inviteObject.isFeedbackGiven = true;
 			await inviteObject.save();
-			const meeting = await Meeting.findById({ _id: req.body.meetingId });
 			await feedbackOrganizerEmail(meeting.organizer, meeting.subject[0]);
+			meeting.isFeedback = true;
+			await meeting.save();
 			res.status(201).json({ message: 'Thank you, your feedback is submitted succesfully!' });
 		} catch (err) {
 			next(err);

@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -11,7 +12,7 @@ import cron from 'node-cron';
 import routes from './routes';
 import Constants from './config/constants';
 import { events } from '../app/lib/fetchEmailParser';
-import { sendFeedbackEmailsToInvites } from '../app/lib/util';
+import { sendFeedbackEmailsToInvites, sendAutomatedEmailsToOrganizer } from '../app/lib/util';
 
 const app = express();
 // Helmet helps you secure your Express apps by setting various HTTP headers
@@ -46,6 +47,10 @@ app.use(Constants.apiPrefix, routes);
 cron.schedule('* * * * *', () => {
 	events();
 	sendFeedbackEmailsToInvites();
+});
+
+cron.schedule('00 00 00 * * *', () => {
+	sendAutomatedEmailsToOrganizer();
 });
 let server = app.listen(Constants.port, () => {
 	// eslint-disable-next-line no-console

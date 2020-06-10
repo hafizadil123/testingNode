@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 import nodemailer from 'nodemailer';
-import { reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate, feedbackOrganizerEmailTemplate } from './emails';
+import { organizerFeedbackSchedulerEmailTemplate, reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate, feedbackOrganizerEmailTemplate } from './emails';
 import User from '../models/user.js';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
@@ -134,6 +134,29 @@ export const sendRegistrationEmail = async(sendTo) => {
 			return err.json({ message: '' });
 		} else {
 			return info.json({ message: 'Registration email has been sent please verify!' });
+		}
+	});
+};
+
+export const feedbackOrganizerSchedulerEmail = async(sendTo, sub) => {
+	let transport = nodemailer.createTransport({
+		service: 'Gmail',
+		auth: {
+			user: 'havea@goodmeeting.today',
+			pass: 'S4v3T1m3',
+		},
+	});
+	const message = {
+		from: 'havea@goodmeeting.today', // Sender address
+		to: sendTo, // List of recipients
+		subject: `7 Days Time For Receiving Feedback Is Over!`, // Subject line
+		html: organizerFeedbackSchedulerEmailTemplate(sub),
+	};
+	transport.sendMail(message, function(err, info) {
+		if (err) {
+			return err.json({ message: '' });
+		} else {
+			return info.json({ message: 'Meeting Feedback email has been sent to organizer!' });
 		}
 	});
 };
@@ -269,6 +292,20 @@ export const sendFeedbackEmailsToInvites = async() => {
 	});
 	console.log('Meeting time not end till yet outside');
 };
+
+
+export const sendAutomatedEmailsToOrganizer = async() => {
+	const meetings = await Meeting.find({});
+	let todayDate = new Date();
+	meetings.map(async(meeting) => {
+		const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
+		if (dateDiff === 8) {
+			await feedbackOrganizerSchedulerEmail(meeting.organizer, meeting.subject[0]);
+			console.log('Automated Email Send!');
+		}
+	});
+};
+
 export const formatedDate = (unformatedDate) => {
 	let year = unformatedDate.substring(0, 4);
 	let month = unformatedDate.substring(4, 6);

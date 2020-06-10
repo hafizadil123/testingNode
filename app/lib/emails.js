@@ -1,6 +1,7 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
-export const feedbackOrganizerEmailTemplate = (sub) => `You Have A New Feedback On Your Meeting <strong>"${sub}"</strong>`;
+export const feedbackOrganizerEmailTemplate = (sub) => `You have a new feedback on your meeting <strong>"${sub}"</strong>`;
+export const organizerFeedbackSchedulerEmailTemplate = (sub) => `Your meeting <strong>"${sub}"</strong> 7 days time for receiving feedback is over, please login to check the feedback.`;
 export const reigstrationEmailTemplate = `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>

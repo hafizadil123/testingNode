@@ -39,6 +39,10 @@ const MeetingSchema = new Schema(
 			type: String,
 			default: null,
 		},
+		isFeedback: {
+			type: Boolean,
+			default: false,
+		},
 		_user: { type: Schema.Types.ObjectId, ref: 'User' },
 	},
 	{
