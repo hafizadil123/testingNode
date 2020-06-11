@@ -54,7 +54,7 @@ routes.get('/get-members-feedback-count', MeetingsController.getMembers);
 
 // Feedbacks
 routes.post('/create-feedback', FeedbackController.create);
-routes.post('/create-feedback-in-seven-days', FeedbackController.meetingFeedbackWithInSevenDays);
+routes.post('/create-feedback-checks', FeedbackController.meetingFeedbackChecks);
 routes.get('/get-feedbacks', FeedbackController.fetch);
 routes.get('/get-feedback/:id', FeedbackController._populate);
 routes.get('/get-feedback-stats/', FeedbackController.feedbackStats);

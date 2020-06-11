@@ -48,10 +48,14 @@ class FeedbackController extends BaseController {
 		}
 	};
 
-	meetingFeedbackWithInSevenDays = async(req, res, next) => {
-		const { meetingId } = req.body;
+	meetingFeedbackChecks = async(req, res, next) => {
+		const { meetingId, inviteeId } = req.body;
 		const todayDate = new Date();
 		try {
+			const isAlreadyExist = await Feedback.findOne({ inviteeId: inviteeId });
+			if (isAlreadyExist) {
+				return res.status(400).json({ message: 'You already submitted feedback of this meeting' });
+			}
 			const meeting = await Meeting.findById({ _id: meetingId });
 			const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
 			if (!meeting) {
@@ -82,7 +86,7 @@ class FeedbackController extends BaseController {
 		const params = this.filterParams(req.body, this.whitelist);
 		const isAlreadyExist = await Feedback.findOne({ inviteeId: req.body.inviteeId });
 		if (isAlreadyExist) {
-			return res.status(400).json({ message: 'you already submitted feedback of this meeting' });
+			return res.status(400).json({ message: 'You already submitted feedback of this meeting' });
 		}
 		const feedback = new Feedback({
 			...params,
@@ -90,16 +94,15 @@ class FeedbackController extends BaseController {
 
 		try {
 			const meeting = await Meeting.findById({ _id: req.body.meetingId });
-			if (meeting.isFeedback) {
-				return res.status(400).json({ message: 'Feedback already submitted for this meeting' });
-			}
 			await feedback.save();
 			const inviteObject = await Invites.findById(req.body.inviteeId);
 			inviteObject.isFeedbackGiven = true;
 			await inviteObject.save();
-			await feedbackOrganizerEmail(meeting.organizer, meeting.subject[0]);
-			meeting.isFeedback = true;
-			await meeting.save();
+			if (meeting.isFeedback) {
+				await feedbackOrganizerEmail(meeting.organizer, meeting.subject[0]);
+				meeting.isFeedback = false;
+				await meeting.save();
+			}
 			res.status(201).json({ message: 'Thank you, your feedback is submitted succesfully!' });
 		} catch (err) {
 			next(err);
