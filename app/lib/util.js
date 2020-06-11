@@ -16,10 +16,10 @@ import ical from 'node-ical';
 
 let config = {
 	imap: {
-		// user: 'havea@goodmeeting.today',
-		// password: 'S4v3T1m3',
-		user: 'myguardiansixtesting@gmail.com',
-		password: 'myguardiansix6',
+		user: 'havea@goodmeeting.today',
+		password: 'S4v3T1m3',
+		// user: 'myguardiansixtesting@gmail.com',
+		// password: 'myguardiansix6',
 		host: 'imap.gmail.com',
 		port: 993,
 		tls: true,
