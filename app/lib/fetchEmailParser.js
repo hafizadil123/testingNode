@@ -15,6 +15,7 @@ import { formatedDate } from './util';
 import Meetings from '../models/meetings';
 import Invites from '../models/invites.js';
 import moment from 'moment';
+import _ from 'lodash';
 
 let imapConfig = {
 	user: 'havea@goodmeeting.today',
@@ -70,11 +71,68 @@ const findUserId = (item) => {
 };
 const updateDataInModels = async(data) => {
 	// remove cancelled meeting if it exist
-	const deletMeeting = await Meetings.findOneAndDelete({ uId: data.uId });
-	if (deletMeeting) {
+	const findMeeting = await Meetings.findOne({ uId: data.uId });
+	if (findMeeting) {
 		console.log('--if already exist--');
-		await Invites.remove({ uId: data.uId });
-		return;
+		console.log('find meeting: --:', findMeeting);
+		console.log('coming meeting: --:', data);
+		const dbObject = {
+			subject: findMeeting.subject[0],
+			uId: findMeeting.uId,
+			endDatWithoutEncoding: findMeeting.endDatWithoutEncoding,
+			organizer: findMeeting.organizer,
+			invites: findMeeting.invites,
+			dateStart: findMeeting.dateStart,
+			dateEnd: findMeeting.dateEnd,
+		};
+		const comingObject = {
+			subject: data.subject[0],
+			uId: data.uId,
+			endDatWithoutEncoding: data.endDatWithoutEncoding,
+			organizer: data.organizer,
+			invites: data.invites,
+			dateStart: data.dateStart,
+			dateEnd: data.dateEnd,
+		};
+		const diff = _.omitBy(comingObject, function(v, k) {
+			console.log('k,v,last[k] = ' + k + ',' + v + ',' + dbObject[k]);
+			return dbObject[k] === v;
+		});
+		if (_.isEmpty(diff)) {
+			console.log('No difference between two object:');
+			await Meetings.findOneAndDelete({ uId: data.uId });
+			await Invites.remove({ uId: data.uId });
+			return;
+		} else {
+			console.log('There is difference between two object:');
+			console.log('Here is difference: --', diff);
+			if (diff.invites) {
+				console.log('difference in invites: --', diff.invites);
+				const dbInvites = findMeeting.invites.split(',');
+				const diffInvites = diff.invites.split(',');
+
+				console.log('dbInvites: ---', dbInvites);
+				console.log('diffInvites: ---', diffInvites);
+				const bothInvitesDiff = _.difference(diffInvites, dbInvites);
+				console.log('bothInvitesDiff: ---', bothInvitesDiff);
+				await Meetings.findOneAndUpdate({ uId: data.uId }, { $set: diff }, { new: true });
+				bothInvitesDiff.map(async(item) => {
+					if (item) {
+						const updateInvites = new Invites({
+							invitesEmail: item,
+							meetingId: findMeeting._id,
+							uId: data.uId,
+						});
+						await updateInvites.save();
+					}
+				});
+				return;
+			}else {
+				console.log('No difference in invites so update the meeting collection: --');
+				await Meetings.findOneAndUpdate({ uId: data.uId }, { $set: diff }, { new: true });
+				return;
+			}
+		}
 	} else {
 		console.log('--else not exist--');
 		const meetingsAdded = await data.save();
