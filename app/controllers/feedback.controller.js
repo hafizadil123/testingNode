@@ -48,6 +48,24 @@ class FeedbackController extends BaseController {
 		}
 	};
 
+	meetingFeedbackWithInSevenDays = async(req, res, next) => {
+		const { meetingId } = req.body;
+		const todayDate = new Date();
+		try {
+			const meeting = await Meeting.findById({ _id: meetingId });
+			const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
+			if (!meeting) {
+				return res.status(400).json({ message: 'No meeting found!' });
+			}
+			if (dateDiff > 7) {
+				return res.status(400).json({ message: 'You cannot provide feedback to this meeting now as you can only provide feedback within 7 days of meeting' });
+			}
+			return res.status(200).json({ message: 'success' });
+		} catch (err) {
+			next(err);
+		}
+	};
+
 	/**
    * req.post is populated by middleware in routes.js
    */
@@ -62,7 +80,6 @@ class FeedbackController extends BaseController {
 
 	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
-		const todayDate = new Date();
 		const isAlreadyExist = await Feedback.findOne({ inviteeId: req.body.inviteeId });
 		if (isAlreadyExist) {
 			return res.status(400).json({ message: 'you already submitted feedback of this meeting' });
@@ -73,12 +90,8 @@ class FeedbackController extends BaseController {
 
 		try {
 			const meeting = await Meeting.findById({ _id: req.body.meetingId });
-		const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
-		if (dateDiff > 7) {
-			return res.status(400).json({ message: 'You cannot provide feedback to this meeting now as you can only provide feedback within 7 days of meeting' });
-		}
 			if (meeting.isFeedback) {
-				return res.status(400).json({ message: 'you already submitted feedback of this meeting' });
+				return res.status(400).json({ message: 'Feedback already submitted for this meeting' });
 			}
 			await feedback.save();
 			const inviteObject = await Invites.findById(req.body.inviteeId);
