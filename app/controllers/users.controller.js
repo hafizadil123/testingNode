@@ -73,6 +73,7 @@ class UsersController extends BaseController {
 				message: 'Your account is created successfully!',
 				name: savedUser.fullName,
 				userEmail: savedUser.email,
+				role: savedUser.role,
 			});
 		} catch (err) {
 			err.status = 400;
