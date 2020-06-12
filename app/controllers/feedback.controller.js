@@ -99,7 +99,9 @@ class FeedbackController extends BaseController {
 			inviteObject.isFeedbackGiven = true;
 			await inviteObject.save();
 			if (meeting.isFeedback) {
-				await feedbackOrganizerEmail(meeting.organizer, meeting.subject[0]);
+				const meetingDate = moment(meeting.endDatWithoutEncoding).format('LL');
+				const endFeedbackdate = moment(meeting.endDatWithoutEncoding).add(6, 'days').format('LL');
+				await feedbackOrganizerEmail(meeting.organizer, meeting.subject[0], meetingDate, endFeedbackdate);
 				meeting.isFeedback = false;
 				await meeting.save();
 			}
