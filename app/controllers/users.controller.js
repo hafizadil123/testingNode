@@ -53,15 +53,21 @@ class UsersController extends BaseController {
 
 	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
-		let newUser = new User({
-			...params,
-			provider: 'local',
-		});
 		try {
+			const user = await User.findone({ email: req.body.email });
+			if (user) {
+				return res.status(400).json({
+					message: 'User already exist!',
+				});
+			}
+			let newUser = new User({
+				...params,
+				provider: 'local',
+			});
 			const savedUser = await newUser.save();
 			const token = savedUser.generateToken();
 			await sendRegistrationEmail(params.email);
-			res.status(201).json({
+			return res.status(201).json({
 				token,
 				userId: savedUser._id,
 				message: 'Your account is created successfully!',
