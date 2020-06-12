@@ -54,7 +54,7 @@ class UsersController extends BaseController {
 	create = async(req, res, next) => {
 		const params = this.filterParams(req.body, this.whitelist);
 		try {
-			const user = await User.findone({ email: req.body.email });
+			const user = await User.findOne({ email: req.body.email });
 			if (user) {
 				return res.status(400).json({
 					message: 'User already exist!',
