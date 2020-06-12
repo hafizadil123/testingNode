@@ -1,6 +1,13 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
-export const feedbackOrganizerEmailTemplate = (sub) => `You have a new feedback on your meeting <strong>"${sub}"</strong>`;
+export const feedbackOrganizerEmailTemplate = (sub, meetingDate, endFeedbackdate) => `
+<p>Hello,</p>
+<p>You’ve received your first feedback for your meeting titled <strong>"${sub}"</strong> on <strong>"${meetingDate}"</strong> date.</p>
+<p>Your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>"${endFeedbackdate}"</strong> date.</p>
+<p>Thank you for being part of the solution!</p>
+<p>Kind regards,</p>
+<p>Good meeting team</p>
+`;
 export const organizerFeedbackSchedulerEmailTemplate = (sub) => `Your meeting <strong>"${sub}"</strong> 7 days time for receiving feedback is over, please login to check the feedback.`;
 export const reigstrationEmailTemplate = `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -104,25 +111,24 @@ xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
                                               <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
                                                   
 
-Congratulations, you’re now on the first step to having more efficient meetings, saving you time and money! </p>
+                                              Congratulations on taking the first step to having more efficient meetings! </p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Save this email for your reference and add <b>havea@goodmeeting.today</b> to your contacts.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">We exist to tackles the obstacle of inefficient, unproductive and unnecessary meetings. We do this through a two-step process that provides feedback on the conferences you hold as well as allowing you to critically evaluate those you are a participant in.  The ability to assess meeting productivity in turn ensures corporate productivity. </p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Ready to start having better meetings? Great! Just create a meeting as you would normally and add <b>havea@goodmeeting.today</b> as an attendee.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Are you ready to get started? Just create a meeting as you normally would and add <b>havea@goodmeeting.today</b> as an attendee.  That’s it – we’ll do the rest from there.</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">That’s it - we will do the rest from there.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Your participants will get a follow up email after the meeting asking them 4 quick questions. All feedback that is given is anonymous, and they have 1 week to answer the short questionnaire.</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">After your meeting, the other invitees will get a follow up email asking them about the meeting they have just had with you!</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Once we collect feedback, log back in to view your meeting statistics and performance.</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Once they have feedback, you will get a mini report on the success of the meeting!</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Thank you for actively tackling the issue of inefficient, and unproductive meetings.</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">It’s that simple!</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Should you have any questions or concerns please do not hesitate to contact us on:</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Remember, we’re about having Good Meetings, make sure you plan ahead and act on the feedback you get!</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">All the best,</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Thanks for signing up and have a great meeting!</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">The Good Meeting team</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"><b>The Good Meeting team.</b></p>
                                           </td>
                                       </tr>
 
