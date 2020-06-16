@@ -2,8 +2,8 @@
 /* eslint-disable max-len */
 export const feedbackOrganizerEmailTemplate = (sub, meetingDate, endFeedbackdate) => `
 <p>Hello,</p>
-<p>You’ve received your first feedback for your meeting titled <strong>"${sub}"</strong> on <strong>"${meetingDate}"</strong> date.</p>
-<p>Your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>"${endFeedbackdate}"</strong> date.</p>
+<p>You’ve received your first feedback for your meeting titled <strong>${sub}</strong> on <strong>${meetingDate}</strong> date.</p>
+<p>If applicable, the rest of your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>${endFeedbackdate}</strong> date.</p>
 <p>Thank you for being part of the solution!</p>
 <p>Kind regards,</p>
 <p>Good meeting team</p>
@@ -345,11 +345,16 @@ export const feedbackEmailTemplate = (
                                                         GoodMeeting Today</h1>
 														
 									
-														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal"> Thank you for attending the meeting with ${userName} on ${startDateTime} with the subject ${subject}. </p>
+														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">“Thank you for attending ${userName}’s meeting on ${startDateTime}, with the subject: (${subject})”</p>
 														
 														
                                                     <h2 style="color:#5e5e5e;font-size:28px;text-align:center;line-height:  25px;font-weight:normal; margin-top: 40px;">
-                                                        Help them out by just answering this, was this a good meeting: </h2>
+                                                    Please take two minutes to answer a brief questionnaire on your meeting.</h2>
+
+                                                    <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
+                                                    Overall - was this a good meeting? (options below "yes it was good" "no, overall it wasn't great"
+                                                    Did you know that according to Bartleby’s Law: “80% of the time of 80% of the people in meetings is wasted?”</p>
+
                                                     <ul style="margin: 50px 0px;text-align: center;">
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #625675;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;margin-right: 15px;"
@@ -360,15 +365,13 @@ export const feedbackEmailTemplate = (
                                                                href="https://goodmeeting.today/feedback-form?isGood=0&meetingId=${meetingId}&name=${userName}&invitee=${inviteName}">No, overall it wasn’t great</a>
                                                         </li>
                                                     </ul>
-                                                    <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
-                                                        Did you know that according to Bartleby’s Law: “80% of the time of 80% of the people in meetings is wasted.”? </p>
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">That equals a lot of people and even more money. </p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">That equals a lot of people and even more money.</p>
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Thankfully, ${userName} uses Good Meeting Today to get feedback on meetings and would like to know what you thought of the meeting with them. </p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">${userName} used Good Meeting to gather feedback to ensure his meetings are as productive as they can be.</p>
 
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal"> Want to ensure you get the most out of meetings? <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If your also tired of monotonous meetings, sign up here: <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
                                                 </td>
                                             </tr>
 

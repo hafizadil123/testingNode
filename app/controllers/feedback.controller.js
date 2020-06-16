@@ -54,7 +54,8 @@ class FeedbackController extends BaseController {
 		try {
 			const isAlreadyExist = await Feedback.findOne({ inviteeId: inviteeId });
 			if (isAlreadyExist) {
-				return res.status(400).json({ message: 'You already submitted feedback of this meeting' });
+				// eslint-disable-next-line quotes
+				return res.status(400).json({ message: "You've already submitted feedback for this meeting" });
 			}
 			const meeting = await Meeting.findById({ _id: meetingId });
 			const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
@@ -86,7 +87,8 @@ class FeedbackController extends BaseController {
 		const params = this.filterParams(req.body, this.whitelist);
 		const isAlreadyExist = await Feedback.findOne({ inviteeId: req.body.inviteeId });
 		if (isAlreadyExist) {
-			return res.status(400).json({ message: 'You already submitted feedback of this meeting' });
+			// eslint-disable-next-line quotes
+			return res.status(400).json({ message: "You've already submitted feedback for this meeting" });
 		}
 		const feedback = new Feedback({
 			...params,
