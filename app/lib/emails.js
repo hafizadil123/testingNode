@@ -345,7 +345,7 @@ export const feedbackEmailTemplate = (
                                                         GoodMeeting Today</h1>
 														
 									
-														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">“Thank you for attending ${userName}’s meeting on ${startDateTime}, with the subject: (${subject})”</p>
+														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">“Thank you for attending ${userName}’s meeting on ${startDateTime}, with the subject: ${subject}”</p>
 														
 														
                                                     <h2 style="color:#5e5e5e;font-size:28px;text-align:center;line-height:  25px;font-weight:normal; margin-top: 40px;">
