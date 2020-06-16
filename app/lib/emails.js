@@ -371,7 +371,7 @@ export const feedbackEmailTemplate = (
 														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">${userName} used Good Meeting to gather feedback to ensure his meetings are as productive as they can be.</p>
 
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If your also tired of monotonous meetings, sign up here: <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If you're also tired of monotonous meetings, sign up here: <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
                                                 </td>
                                             </tr>
 
