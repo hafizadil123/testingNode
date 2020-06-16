@@ -90,15 +90,15 @@ export const getAttachment = async() => {
 				dateEnd: moment(filterObj.end).format('YYYY-MM-DDTHH:mm:ss\\Z'),
 				organizer: filterObj.organizer.params.EMAIL
 					? filterObj.organizer.params.EMAIL
-					: filterObj.organizer.val.split('mailto:').join(''),
+					: filterObj.organizer.val.toLowerCase().split('mailto:').join(''),
 				invites:
 					filterObj.attendee.length === undefined
 						? filterObj.attendee.params.EMAIL
 							? filterObj.attendee.params.EMAIL
-							: filterObj.attendee.val.split('mailto:').join('')
+							: filterObj.attendee.val.toLowerCase().split('mailto:').join('')
 						: filterObj.attendee.map(
 								(invite) =>
-									invite.params.EMAIL ? invite.params.EMAIL : invite.val.split('mailto:').join('')
+									invite.params.EMAIL ? invite.params.EMAIL : invite.val.toLowerCase().split('mailto:').join('')
 							),
 				status: filterObj.status,
 				uId: filterObj.uid,

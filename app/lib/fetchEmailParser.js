@@ -36,6 +36,7 @@ export const events = async(req, res) => {
 		: emailFetchedData.map(async(data) => {
 				if ((await data) !== undefined) {
 					const userId = await findUserId(data.organizer);
+					// if not exist just send email to register at our platform
 					if (userId) {
 						const mapData = {
 							subject: data.subject,
