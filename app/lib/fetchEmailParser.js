@@ -9,7 +9,7 @@ let Promise = require('bluebird');
 const dateFormat = require('dateformat');
 Promise.longStackTraces();
 // import ical from 'cal-parser';
-import { findUserIdByEmail, getAttachment } from './util.js';
+import { findUserIdByEmail, getAttachment, sendEmailToNotRegisteredUser } from './util.js';
 import User from '../models/user';
 import { formatedDate } from './util';
 import Meetings from '../models/meetings';
@@ -62,6 +62,8 @@ export const events = async(req, res) => {
 							...mapData,
 						});
 						updateDataInModels(updateMeetings);
+					}else {
+						sendEmailToNotRegisteredUser(data.organizer);
 					}
 				}
 			});

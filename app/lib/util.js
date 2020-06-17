@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 import nodemailer from 'nodemailer';
-import { organizerFeedbackSchedulerEmailTemplate, reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate, feedbackOrganizerEmailTemplate } from './emails';
+import { sendEmailToNotRegisteredUserTemplate, organizerFeedbackSchedulerEmailTemplate, reigstrationEmailTemplate, feedbackEmailTemplate, forgotPasswordTemplate, feedbackOrganizerEmailTemplate } from './emails';
 import User from '../models/user.js';
 import Invites from '../models/invites';
 import Meeting from '../models/meetings';
@@ -128,6 +128,30 @@ export const sendRegistrationEmail = async(sendTo) => {
 		to: sendTo, // List of recipients
 		subject: 'Welcome In Good Meeting', // Subject line
 		html: reigstrationEmailTemplate,
+	};
+	transport.sendMail(message, function(err, info) {
+		if (err) {
+			return err.json({ message: '' });
+		} else {
+			return info.json({ message: 'Registration email has been sent please verify!' });
+		}
+	});
+};
+
+
+export const sendEmailToNotRegisteredUser = async(sendTo) => {
+	let transport = nodemailer.createTransport({
+		service: 'Gmail',
+		auth: {
+			user: 'havea@goodmeeting.today',
+			pass: 'S4v3T1m3',
+		},
+	});
+	const message = {
+		from: 'havea@goodmeeting.today', // Sender address
+		to: sendTo, // List of recipients
+		subject: 'Welcome In Good Meeting', // Subject line
+		html: sendEmailToNotRegisteredUserTemplate,
 	};
 	transport.sendMail(message, function(err, info) {
 		if (err) {

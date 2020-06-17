@@ -1,14 +1,413 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
-export const feedbackOrganizerEmailTemplate = (sub, meetingDate, endFeedbackdate) => `
-<p>Hello,</p>
-<p>You’ve received your first feedback for your meeting titled <strong>${sub}</strong> on <strong>${meetingDate}</strong> date.</p>
-<p>If applicable, the rest of your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>${endFeedbackdate}</strong> date.</p>
-<p>Thank you for being part of the solution!</p>
-<p>Kind regards,</p>
-<p>Good meeting team</p>
-`;
-export const organizerFeedbackSchedulerEmailTemplate = (sub) => `Your meeting <strong>"${sub}"</strong> 7 days time for receiving feedback is over, please login to check the feedback.`;
+export const sendEmailToNotRegisteredUserTemplate = `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+<style type="text/css">
+
+  #outlook a {
+      padding: 0;
+  }
+
+  .ReadMsgBody {
+      width: 100%;
+  }
+
+  .ExternalClass {
+      width: 100%;
+  }
+
+  .ExternalClass * {
+      line-height: 100%;
+  }
+
+  body {
+      font-family: Open Sans;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+  }
+
+  table, td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+  }
+
+  img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+  }
+
+  p {
+      display: block;
+      margin: 13px 0;
+  }
+</style>
+<style type="text/css">
+  @media only screen and (max-width: 480px) {
+      @-ms-viewport {
+          width: 320px;
+      }
+      @viewport {
+          width: 320px;
+      }
+  }
+</style>
+<style type="text/css">
+  @media only screen and (min-width: 480px) {
+      .mj-column-per-100 {
+          width: 100% !important;
+      }
+  }
+</style>
+
+</head>
+<body style="font-family: 'Open Sans', sans-serif;background: #FFFFFF;">
+
+<div class="mj-container" style="background-color:#FFFFFF;">
+<div style="margin:0px auto;max-width:800px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;" align="center"
+         border="0">
+      <tbody>
+      <tr>
+          <td style="text-align:center;vertical-align:top;direction:ltr;">
+              <div class="mj-column-per-100 outlook-group-fix"
+                   style="vertical-align:top;display:inline-block;direction:ltr;text-align:left;width:100%;">
+                  <table role="presentation" width="800" cellpadding="0" cellspacing="0"
+                         style="width:800px;max-width:800px;min-width:800px" align="center" border="0">
+                      <tbody>
+                      <tr>
+                          <td style="word-wrap:break-word;" align="center">
+                              <div style="cursor:auto;text-align:center;position: relative;">
+                                  <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                      <tbody>
+
+                                      <tr>
+                                          <td>
+                                              <h1 style="color:#E15752;font-size:32px;text-align:center;line-height:	25px;font-weight:bold">
+                                                  GoodMeeting Today</h1>
+                                              <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
+                                                  
+
+                                              Hello,</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Thank you for adding us in to your meeting, unfortunately you are not registered with us yet. To do so, please click here <strong><a href='https://goodmeeting.today/register'>Register</a></strong></p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">We are very conscious with your time, and so it is a very quick registration process - less than a minute!</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Once you’ve registered please re-add us to the meeting.</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If you have any questions please do not hesitate to contact us.</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good meeting team</p>
+
+
+                                          </td>
+                                      </tr>
+
+
+                                      </td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </td>
+                      </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </td>
+      </tr>
+      </tbody>
+  </table>
+</div>
+</div>
+
+</div>
+</body>
+</html>`;
+
+export const feedbackOrganizerEmailTemplate = (sub, meetingDate, endFeedbackdate) => `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+<style type="text/css">
+
+  #outlook a {
+      padding: 0;
+  }
+
+  .ReadMsgBody {
+      width: 100%;
+  }
+
+  .ExternalClass {
+      width: 100%;
+  }
+
+  .ExternalClass * {
+      line-height: 100%;
+  }
+
+  body {
+      font-family: Open Sans;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+  }
+
+  table, td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+  }
+
+  img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+  }
+
+  p {
+      display: block;
+      margin: 13px 0;
+  }
+</style>
+<style type="text/css">
+  @media only screen and (max-width: 480px) {
+      @-ms-viewport {
+          width: 320px;
+      }
+      @viewport {
+          width: 320px;
+      }
+  }
+</style>
+<style type="text/css">
+  @media only screen and (min-width: 480px) {
+      .mj-column-per-100 {
+          width: 100% !important;
+      }
+  }
+</style>
+
+</head>
+<body style="font-family: 'Open Sans', sans-serif;background: #FFFFFF;">
+
+<div class="mj-container" style="background-color:#FFFFFF;">
+<div style="margin:0px auto;max-width:800px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;" align="center"
+         border="0">
+      <tbody>
+      <tr>
+          <td style="text-align:center;vertical-align:top;direction:ltr;">
+              <div class="mj-column-per-100 outlook-group-fix"
+                   style="vertical-align:top;display:inline-block;direction:ltr;text-align:left;width:100%;">
+                  <table role="presentation" width="800" cellpadding="0" cellspacing="0"
+                         style="width:800px;max-width:800px;min-width:800px" align="center" border="0">
+                      <tbody>
+                      <tr>
+                          <td style="word-wrap:break-word;" align="center">
+                              <div style="cursor:auto;text-align:center;position: relative;">
+                                  <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                      <tbody>
+
+                                      <tr>
+                                          <td>
+                                              <h1 style="color:#E15752;font-size:32px;text-align:center;line-height:	25px;font-weight:bold">
+                                                  GoodMeeting Today</h1>
+                                              <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
+                                                  
+
+                                              Hello,</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">You’ve received your first feedback for your meeting titled <strong>${sub}</strong> on <strong>${meetingDate}</strong> date.</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If applicable, the rest of your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>${endFeedbackdate}</strong> date.</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Thank you for being part of the solution!</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good meeting team</p>
+
+
+                                          </td>
+                                      </tr>
+
+
+                                      </td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </td>
+                      </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </td>
+      </tr>
+      </tbody>
+  </table>
+</div>
+</div>
+
+</div>
+</body>
+</html>`;
+
+export const organizerFeedbackSchedulerEmailTemplate = (sub) => `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+<style type="text/css">
+
+  #outlook a {
+      padding: 0;
+  }
+
+  .ReadMsgBody {
+      width: 100%;
+  }
+
+  .ExternalClass {
+      width: 100%;
+  }
+
+  .ExternalClass * {
+      line-height: 100%;
+  }
+
+  body {
+      font-family: Open Sans;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+  }
+
+  table, td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+  }
+
+  img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+  }
+
+  p {
+      display: block;
+      margin: 13px 0;
+  }
+</style>
+<style type="text/css">
+  @media only screen and (max-width: 480px) {
+      @-ms-viewport {
+          width: 320px;
+      }
+      @viewport {
+          width: 320px;
+      }
+  }
+</style>
+<style type="text/css">
+  @media only screen and (min-width: 480px) {
+      .mj-column-per-100 {
+          width: 100% !important;
+      }
+  }
+</style>
+
+</head>
+<body style="font-family: 'Open Sans', sans-serif;background: #FFFFFF;">
+
+<div class="mj-container" style="background-color:#FFFFFF;">
+<div style="margin:0px auto;max-width:800px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;" align="center"
+         border="0">
+      <tbody>
+      <tr>
+          <td style="text-align:center;vertical-align:top;direction:ltr;">
+              <div class="mj-column-per-100 outlook-group-fix"
+                   style="vertical-align:top;display:inline-block;direction:ltr;text-align:left;width:100%;">
+                  <table role="presentation" width="800" cellpadding="0" cellspacing="0"
+                         style="width:800px;max-width:800px;min-width:800px" align="center" border="0">
+                      <tbody>
+                      <tr>
+                          <td style="word-wrap:break-word;" align="center">
+                              <div style="cursor:auto;text-align:center;position: relative;">
+                                  <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                      <tbody>
+
+                                      <tr>
+                                          <td>
+                                              <h1 style="color:#E15752;font-size:32px;text-align:center;line-height:	25px;font-weight:bold">
+                                                  GoodMeeting Today</h1>
+                                              <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
+                                                  
+
+                                              Hello,</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Your meeting <strong>"${sub}"</strong> 7 days time for receiving feedback is over, please login to check the feedback.</p>
+
+                                          </td>
+                                      </tr>
+
+
+                                      </td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </td>
+                      </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </td>
+      </tr>
+      </tbody>
+  </table>
+</div>
+</div>
+
+</div>
+</body>
+</html>`;
+
+
 export const reigstrationEmailTemplate = `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
