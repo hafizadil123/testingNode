@@ -75,6 +75,7 @@ const findUserId = (item) => {
 const updateDataInModels = async(data) => {
 	// remove cancelled meeting if it exist
 	const findMeeting = await Meetings.findOne({ uId: data.uId });
+	const todayDate = new Date();
 	if (findMeeting) {
 		console.log('--if already exist--');
 		console.log('find meeting: --:', findMeeting);
@@ -106,7 +107,7 @@ const updateDataInModels = async(data) => {
 			await Meetings.findOneAndDelete({ uId: data.uId });
 			await Invites.remove({ uId: data.uId });
 			return;
-		} else {
+		} else if (findMeeting.endDatWithoutEncoding > data.dateEnd) {
 			console.log('There is difference between two object:');
 			console.log('Here is difference: --', diff);
 			if (diff.invites) {
