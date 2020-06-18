@@ -642,7 +642,10 @@ export const feedbackEmailTemplate = (
   inviteEmail,
   inviteName,
   userName,
-  startDateTime,
+  day,
+  month,
+  year,
+  time,
   subject
 ) => `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
@@ -744,15 +747,15 @@ export const feedbackEmailTemplate = (
                                                         GoodMeeting Today</h1>
 														
 									
-														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">“Thank you for attending ${userName}’s meeting on ${startDateTime}, with the subject: ${subject}”</p>
+														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">Thank you for attending ${userName}’s meeting on ${day},${month},${year} AT${time}, with the subject: ${subject}</p>
 														
 														
                                                     <h2 style="color:#5e5e5e;font-size:28px;text-align:center;line-height:  25px;font-weight:normal; margin-top: 40px;">
                                                     Please take two minutes to answer a brief questionnaire on your meeting.</h2>
 
                                                     <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
-                                                    Overall - was this a good meeting? (options below "yes it was good" "no, overall it wasn't great"
-                                                    Did you know that according to Bartleby’s Law: “80% of the time of 80% of the people in meetings is wasted?”</p>
+                                                    Overall - was this a good meeting? ("yes it was good" "no, overall it wasn't great").</p>
+                                                    
 
                                                     <ul style="margin: 50px 0px;text-align: center;">
                                                         <li style="display: inline-block;">
@@ -764,10 +767,11 @@ export const feedbackEmailTemplate = (
                                                                href="https://goodmeeting.today/feedback-form?isGood=0&meetingId=${meetingId}&name=${userName}&invitee=${inviteName}">No, overall it wasn’t great</a>
                                                         </li>
                                                     </ul>
+                                                        <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Did you know that according to Bartleby’s Law: “80% of the time of 80% of the people in meetings is wasted?”</p>
+                                                        
+                                                        <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">That equals a lot of people and even more money.</p>
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">That equals a lot of people and even more money.</p>
-
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">${userName} used Good Meeting to gather feedback to ensure his meetings are as productive as they can be.</p>
+														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">${userName} used Good Meeting to gather feedback to ensure their meetings are as productive as they can be.</p>
 
 
 														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If you're also tired of monotonous meetings, sign up here: <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>

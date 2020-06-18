@@ -50,8 +50,8 @@ export const events = async(req, res) => {
 													invite !== data.organizer && invite !== 'havea@goodmeeting.today'
 											)
 											.join(','),
-							dateStart: moment(data.dateStart).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
-							dateEnd: moment(data.dateEnd).utc().format('dddd, MMMM Do, YYYY, h:mm:ss a'),
+							dateStart: moment(data.dateStart).utc().format('dddd, MMMM Do, YYYY, h:mm a'),
+							dateEnd: moment(data.dateEnd).utc().format('dddd, MMMM Do, YYYY, h:mm a'),
 							// location: data.location,
 							endDatWithoutEncoding: data.dateEnd,
 							status: data.status,
@@ -63,6 +63,7 @@ export const events = async(req, res) => {
 						});
 						updateDataInModels(updateMeetings);
 					}else {
+						console.log('send email if organizer not exist');
 						sendEmailToNotRegisteredUser(data.organizer);
 					}
 				}

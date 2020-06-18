@@ -263,7 +263,7 @@ export const contactUsEmail = async(payload) => {
 		}
 	});
 };
-const sendFeedbackMail = async(sendTo, inviteId, startDateTime, subject, fullName) => {
+const sendFeedbackMail = async(sendTo, inviteId, day, month, year, time, subject, fullName) => {
 	let transport = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -276,8 +276,8 @@ const sendFeedbackMail = async(sendTo, inviteId, startDateTime, subject, fullNam
 	const message = {
 		from: 'havea@goodmeeting.today', // Sender address
 		to: sendTo, // List of recipients
-		subject: 'Good Meeting Feedbacks', // Subject line
-		html: feedbackEmailTemplate(meetingId, sendTo, inviteId, fullName, startDateTime, subject),
+		subject: 'Good Meeting Feedback', // Subject line
+		html: feedbackEmailTemplate(meetingId, sendTo, inviteId, fullName, day, month, year, time, subject),
 	};
 
 	transport.sendMail(message, function(err, info) {
@@ -305,7 +305,12 @@ export const sendFeedbackEmailsToInvites = async() => {
 					console.log('sent from loal: --');
 					let subject = meeting.subject[0] || 'Good Meetings';
 					let startDateTime = meeting.dateStart;
-					sendFeedbackMail(item.invitesEmail, item._id, startDateTime, subject, meeting._user.fullName);
+					const splitData = startDateTime.split(',');
+					const day = splitData[0];
+					const month = splitData[1];
+					const year = splitData[2];
+					const time = splitData[3];
+					sendFeedbackMail(item.invitesEmail, item._id, day, month, year, time, subject, meeting._user.fullName);
 					item.isEmailSent = true;
 					item.save();
 				} else {
