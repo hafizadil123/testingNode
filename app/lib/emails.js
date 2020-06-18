@@ -747,14 +747,15 @@ export const feedbackEmailTemplate = (
                                                         GoodMeeting Today</h1>
 														
 									
-														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">Thank you for attending ${userName}’s meeting on ${day},${month},${year} AT${time}, with the subject: ${subject}</p>
+														<p style="color:#625675;font-size:14px;text-align:center;line-height:	25px;font-weight:normal">Thank you for attending ${userName}’s meeting on ${day},${month},${year} at${time}, with the subject: ${subject}</p>
 														
 														
                                                     <h2 style="color:#5e5e5e;font-size:28px;text-align:center;line-height:  25px;font-weight:normal; margin-top: 40px;">
                                                     Please take two minutes to answer a brief questionnaire on your meeting.</h2>
 
                                                     <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
-                                                    Overall - was this a good meeting? ("yes it was good" "no, overall it wasn't great").</p>
+                                                    Overall - was this a good meeting?</p>
+                                                    <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">the email also needs to be signed off by the good meeting team</p>
                                                     
 
                                                     <ul style="margin: 50px 0px;text-align: center;">
