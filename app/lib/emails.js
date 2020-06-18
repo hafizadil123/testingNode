@@ -755,9 +755,7 @@ export const feedbackEmailTemplate = (
 
                                                     <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
                                                     Overall - was this a good meeting?</p>
-                                                    <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">the email also needs to be signed off by the good meeting team</p>
-                                                    
-
+                                                   
                                                     <ul style="margin: 50px 0px;text-align: center;">
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #625675;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;margin-right: 15px;"
@@ -775,7 +773,9 @@ export const feedbackEmailTemplate = (
 														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">${userName} used Good Meeting to gather feedback to ensure their meetings are as productive as they can be.</p>
 
 
-														<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If you're also tired of monotonous meetings, sign up here: <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
+                                                        <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If you're also tired of monotonous meetings, sign up here: <a target=_blank href="https://goodmeeting.today"> Create your own account here and have a GoodMeeting.Today </a> </p>
+                                                        <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
+                                                        <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good meeting team</p>
                                                 </td>
                                             </tr>
 
