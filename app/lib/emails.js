@@ -242,9 +242,9 @@ xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
                                               Hello,</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">You’ve received your first feedback for your meeting titled <strong>${sub}</strong> on <strong>${meetingDate}</strong> date.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">You’ve received your first feedback for your meeting titled <strong>${sub}</strong> on <strong>${meetingDate}</strong>.</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If applicable, the rest of your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>${endFeedbackdate}</strong> date.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">If applicable, the rest of your participants still have a few more days to complete the survey.  Log back in to check your performance on <strong>${endFeedbackdate}</strong>.</p>
 
 <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Thank you for being part of the solution!</p>
 
