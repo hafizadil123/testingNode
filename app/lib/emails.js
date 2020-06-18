@@ -614,7 +614,12 @@ export const forgotPasswordTemplate = (updateUrl, userId) => `<!DOCTYPE html>
                                                         </li> 
                                                     </ul>        
                                                     <p style="color:#625675;font-size:16px;text-align:center;line-height:   25px;font-weight:bolder">If you didn't mean to reset password, then you can just ignore this<br> email, your password will not change.</p>
-                                                </td>
+                                                
+                                                    <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
+
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">The Good Meeting team</p>
+
+                                                    </td>
                                             </tr>
                                            
 

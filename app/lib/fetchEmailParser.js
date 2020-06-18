@@ -139,7 +139,9 @@ const updateDataInModels = async(data) => {
 			}
 		}
 	} else {
-		console.log('--else not exist--');
+		const meet = await Meetings.findOne({ uId: data.uId });
+		if (!meet) {
+			console.log('--else not exist--');
 		const meetingsAdded = await data.save();
 		const invitesArray = meetingsAdded.invites.split(',');
 		//  const invitesArray = 'ahafiz167@gmail.com, saeed@thirtynorth.dev';
@@ -160,5 +162,8 @@ const updateDataInModels = async(data) => {
 				console.log('comma exist');
 			}
 		});
+		}else {
+			console.log('--meeting exist--');
+		}
 	}
 };
