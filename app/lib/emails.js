@@ -381,6 +381,8 @@ xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
                                               Hello,</p>
 
 <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Your meeting <strong>"${sub}"</strong> 7 days time for receiving feedback is over, please login to check the feedback.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good meeting team</p>
 
                                           </td>
                                       </tr>
