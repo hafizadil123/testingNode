@@ -766,7 +766,7 @@ export const feedbackEmailTemplate = (
                                                     <ul style="margin: 50px 0px;text-align: center;">
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #625675;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;margin-right: 15px;"
-                                                               href='https://goodmeeting.today/feedback-form?isGood=1&meetingId=${meetingId}&name=${userName}&invitee=${inviteName}'>Yes, on the whole it was good</a>
+                                                               href="https://goodmeeting.today/feedback-form?isGood=1&meetingId=${meetingId}&name=${userName}&invitee=${inviteName}">Yes, on the whole it was good</a>
                                                         </li>
                                                         <li style="display: inline-block;">
                                                             <a style="color: #fff;font-size:16px;background-color: #E15752;text-decoration: none;    padding: 10px 15px;    border-radius: 50px;"
