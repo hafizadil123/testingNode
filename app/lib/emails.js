@@ -278,7 +278,7 @@ xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 </body>
 </html>`;
 
-export const organizerFeedbackSchedulerEmailTemplate = (sub) => `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+export const organizerFeedbackSchedulerEmailTemplate = (sub, fullName) => `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -378,11 +378,11 @@ xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
                                               <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">
                                                   
 
-                                              Hello,</p>
+                                              Hello ${fullName},</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Your meeting <strong>"${sub}"</strong> 7 days time for receiving feedback is over, please login to check the feedback.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">It’s been 7 days since your meeting titled <strong>"${sub}"</strong>. Log back <a href="https://goodmeeting.today/login">here</a> in to view your feedback and see how you performed.</p>
 <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good meeting team</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good Meeting Team</p>
 
                                           </td>
                                       </tr>

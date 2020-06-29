@@ -162,7 +162,7 @@ export const sendEmailToNotRegisteredUser = async(sendTo) => {
 	});
 };
 
-export const feedbackOrganizerSchedulerEmail = async(sendTo, sub) => {
+export const feedbackOrganizerSchedulerEmail = async(sendTo, sub, fullName) => {
 	let transport = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -173,8 +173,8 @@ export const feedbackOrganizerSchedulerEmail = async(sendTo, sub) => {
 	const message = {
 		from: 'havea@goodmeeting.today', // Sender address
 		to: sendTo, // List of recipients
-		subject: `7 Days Time For Receiving Feedback Is Over!`, // Subject line
-		html: organizerFeedbackSchedulerEmailTemplate(sub),
+		subject: `check your meeting statistics`, // Subject line
+		html: organizerFeedbackSchedulerEmailTemplate(sub, fullName),
 	};
 	transport.sendMail(message, function(err, info) {
 		if (err) {
@@ -327,9 +327,10 @@ export const sendAutomatedEmailsToOrganizer = async() => {
 	const meetings = await Meeting.find({});
 	let todayDate = new Date();
 	meetings.map(async(meeting) => {
+		const user = await User.findById({ _id: meeting._user });
 		const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
 		if (dateDiff === 8) {
-			await feedbackOrganizerSchedulerEmail(meeting.organizer, meeting.subject[0]);
+			await feedbackOrganizerSchedulerEmail(meeting.organizer, meeting.subject[0], user.fullName);
 			console.log('Automated Email Send!');
 		}
 	});
