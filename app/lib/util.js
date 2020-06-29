@@ -327,7 +327,7 @@ export const sendAutomatedEmailsToOrganizer = async() => {
 	const meetings = await Meeting.find({});
 	let todayDate = new Date();
 	meetings.map(async(meeting) => {
-		const user = await User.findById({ _id: meeting._user });
+		const user = await User.findOne({ email: meeting.organizer });
 		const dateDiff = moment(todayDate).diff(meeting.endDatWithoutEncoding, 'days');
 		if (dateDiff === 8) {
 			await feedbackOrganizerSchedulerEmail(meeting.organizer, meeting.subject[0], user.fullName);
