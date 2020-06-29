@@ -380,7 +380,7 @@ xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
                                               Hello ${fullName},</p>
 
-<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">It’s been 7 days since your meeting titled <strong>"${sub}"</strong>. Log back <a href="https://goodmeeting.today/login">here</a> in to view your feedback and see how you performed.</p>
+<p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">It’s been 7 days since your meeting titled <strong>${sub}</strong>. Log back in <a href="https://goodmeeting.today/login">here</a> to view your feedback and see how you performed.</p>
 <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Kind regards,</p>
 <p style="color:#625675;font-size:16px;text-align:left;line-height:   25px;font-weight:normal">Good Meeting Team</p>
 
