@@ -5,12 +5,13 @@
 /* eslint-disable prefer-spread */
 import BaseController from './base.controller';
 import Meeting from '../models/meetings';
+import User from '../models/user';
 import Invite from '../models/invites';
 import Feedback from '../models/feedback';
 import QuestionAnswers from '../models/questionAnswers';
 import moment from 'moment';
 class MeetingsController extends BaseController {
-	whitelist = ['text'];
+	whitelist = ['text', 'from', 'to'];
 
 	// Middleware to populate post based on url param
 	_populate = async(req, res, next) => {
@@ -147,6 +148,66 @@ class MeetingsController extends BaseController {
 		};
 
 		return res.status(200).json({ message: 'success', meetings: responseObj });
+	};
+
+
+	getUserBarStats = async(req, res, next) => {
+		const { userId } = req.params;
+		const { from, to } = req.body;
+		try {
+			const user = await User.findById({ _id: userId });
+			if (!user) {
+				return res.status(400).json({ message: 'no user found!' });
+			}
+			if ( from && to ) {
+				const meetings = await Meeting.find({ $and: [{ createdAt: { $gte: new Date(from), $lte: new Date(to) } }, { _user: userId }] });
+				if (!meetings) {
+					return res.status(400).json({ message: 'no meeting found!' });
+				}
+				const scoreArray = Promise.all(meetings.map(async(meeting)=> await this.getMeetingAvgForBarStats(meeting._id, meeting.invites)));
+				const scores = await scoreArray;
+				return res.json({ msg: 'success', scores });
+			}
+			const meetings = await Meeting.find({ _user: userId });
+			if (!meetings) {
+				return res.status(400).json({ message: 'no meeting found!' });
+			}
+			const scoreArray = Promise.all(meetings.map(async(meeting)=> await this.getMeetingAvgForBarStats(meeting._id, meeting.invites)));
+			const scores = await scoreArray;
+			return res.json({ msg: 'success', scores });
+		} catch (err) {
+			next(err);
+		}
+	};
+
+	getMeetingAvgForBarStats = async(meetingId, invites) => {
+		let result;
+		const members = invites.split(',').length;
+		const getAnswerArray = await QuestionAnswers.find({});
+		getAnswerArray.map((item) => item.answer);
+		const feedback = await Feedback.find({ meetingId: meetingId });
+		// console.log(feedback);
+		const gooMeeting = feedback.filter((item) => item.isGood === true);
+		const badMeeting = feedback.filter((item) => item.isGood === false);
+		const totalFeedback = feedback.length;
+		const noResponse = members - totalFeedback;
+		result = feedback.map((el) => {
+			return el.feedbackResults.map((item) => item.answerId);
+		});
+		let mergedResults = [].concat.apply([], result);
+		const getAns = getAnswerArray.map((item) => item.answers);
+		let getAnsMerged = [].concat.apply([], getAns);
+		const matchedResults = mergedResults.map((item) => getAnsMerged.filter((el) => el.id == item));
+		let removeArraySymbol = [].concat.apply([], matchedResults);
+		let total =
+			removeArraySymbol.length > 0
+				? removeArraySymbol.reduce(function(accumulator, currentValue) {
+						return accumulator + currentValue.weightage;
+					}, 0)
+				: 0;
+		// count total and devide to total
+		const avgMeetingScore = total !== 0 ? Math.trunc(total / removeArraySymbol.length) : 0;
+		return avgMeetingScore;
 	};
 
 	search = async(_req, res, next) => {

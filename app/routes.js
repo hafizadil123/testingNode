@@ -51,6 +51,7 @@ routes.post('/create-meeting', MeetingsController.create);
 routes.get('/get-meetings', MeetingsController.fetch);
 routes.get('/get-meeting-by-id', MeetingsController._populate);
 routes.get('/get-members-feedback-count', MeetingsController.getMembers);
+routes.post('/get-user-bar-stats/:userId', MeetingsController.getUserBarStats);
 
 // Feedbacks
 routes.post('/create-feedback', FeedbackController.create);
