@@ -377,21 +377,21 @@ class QuestionsController extends BaseController {
 						_id: '$_id',
 						question: { $first: '$questionText' },
 						answers: {
-							$push: {
-								id: '$answers.answerId',
-								answer: '$answers.answerText',
-								weightage: '$answers.weightage',
-								count: '$answers.answerCount',
-								percentage: {
-									$cond: [
-										{ $eq: ['$totalCount', 0] },
-										0,
-										{
-											$multiply: [{ $divide: ['$answers.answerCount', '$totalCount'] }, 100],
-										},
-									],
-								},
-							},
+							$push: '$answers.answerCount', // {
+								// id: '$answers.answerId',
+								// answer: '$answers.answerText',
+								// weightage: '$answers.weightage',
+								// count: '$answers.answerCount',
+								// percentage: {
+								// 	$cond: [
+								// 		{ $eq: ['$totalCount', 0] },
+								// 		0,
+								// 		{
+								// 			$multiply: [{ $divide: ['$answers.answerCount', '$totalCount'] }, 100],
+								// 		},
+								// 	],
+								// },
+							// },
 						},
 					},
 				},
