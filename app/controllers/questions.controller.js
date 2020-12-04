@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable linebreak-style */
 /* eslint-disable new-cap */
 /* eslint-disable babel/new-cap */
@@ -111,131 +112,265 @@ class QuestionsController extends BaseController {
    * req.user is populated by middleware in routes.js
    */
 
-	getSummary = async(req, res) => {
+	getSummary = async(req, res, next) => {
 		const userId = mongoose.Types.ObjectId(req.query.userId);
-		const summaryDeatils = await Meeting.aggregate([
-			{ $match: { _user: userId } },
-			{
-				$lookup: {
-					from: 'feedbacks',
-					let: { meeting_id: '$_id' },
-					pipeline: [
-						{
-							$match: {
-								$expr: {
-									$eq: ['$meetingId', '$$meeting_id'],
-								},
-							},
-						},
-						{ $unwind: { path: '$feedbackResults' } },
-						{
-							$project: {
-								question_id: {
-									$toObjectId: '$feedbackResults.questionId',
-								},
-								answer_id: {
-									$toObjectId: '$feedbackResults.answerId',
-								},
-							},
-						},
-						{
-							$lookup: {
-								from: 'questionanswers',
-								localField: 'question_id',
-								foreignField: '_id',
-								as: 'qa_data',
-							},
-						},
-						{ $unwind: { path: '$qa_data' } },
-						{
-							$project: {
-								answer_data: {
-									$filter: {
-										input: '$qa_data.answers',
-										as: 'item',
-										cond: { $eq: ['$$item.id', '$answer_id'] },
+		const { from, to } = req.query;
+		try {
+			if( from && to) {
+				console.log('exist');
+				const summaryDeatils = await Meeting.aggregate([
+					{ $match: { $and: [{ createdAt: { $gte: new Date(from), $lte: new Date(to) } }, { _user: userId }] } },
+					{
+						$lookup: {
+							from: 'feedbacks',
+							let: { meeting_id: '$_id' },
+							pipeline: [
+								{
+									$match: {
+										$expr: {
+											$eq: ['$meetingId', '$$meeting_id'],
+										},
 									},
 								},
-							},
-						},
-						{ $unwind: { path: '$answer_data' } },
-						{
-							$group: {
-								_id: '',
-								weightage: { $avg: '$answer_data.weightage' },
-							},
-						},
-					],
-					as: 'feedback_data',
-				},
-			},
-			{
-				$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true },
-			},
-			{
-				$lookup: {
-					from: 'feedbacks',
-					localField: '_id',
-					foreignField: 'meetingId',
-					as: 'feedbacks',
-				},
-			},
-			{
-				$project: {
-					weightage: '$feedback_data.weightage',
-					providedFeedbacks: {
-						$cond: {
-							if: {
-								$gt: [{ $size: '$feedbacks' }, 0],
-							},
-							then: { $size: '$feedbacks' },
-							else: 0,
-						},
-					},
-					noFeedbacks: {
-						$cond: {
-							if: {
-								$gt: [{ $size: '$feedbacks' }, 0],
-							},
-							then: 0,
-							else: 1,
+								{ $unwind: { path: '$feedbackResults' } },
+								{
+									$project: {
+										question_id: {
+											$toObjectId: '$feedbackResults.questionId',
+										},
+										answer_id: {
+											$toObjectId: '$feedbackResults.answerId',
+										},
+									},
+								},
+								{
+									$lookup: {
+										from: 'questionanswers',
+										localField: 'question_id',
+										foreignField: '_id',
+										as: 'qa_data',
+									},
+								},
+								{ $unwind: { path: '$qa_data' } },
+								{
+									$project: {
+										answer_data: {
+											$filter: {
+												input: '$qa_data.answers',
+												as: 'item',
+												cond: { $eq: ['$$item.id', '$answer_id'] },
+											},
+										},
+									},
+								},
+								{ $unwind: { path: '$answer_data' } },
+								{
+									$group: {
+										_id: '',
+										weightage: { $avg: '$answer_data.weightage' },
+									},
+								},
+							],
+							as: 'feedback_data',
 						},
 					},
-				},
-			},
-			{
-				$group: {
-					_id: '',
-					averageWeightage: { $avg: '$weightage' },
-					providedFeedbacks: { $sum: '$providedFeedbacks' },
-					noFeedbacks: { $sum: '$noFeedbacks' },
-					totalMeetings: { $push: { _id: '$_id' } },
-				},
-			},
-			{
-				$project: {
-					_id: false,
-					averageWeightage: { $ifNull: ['$averageWeightage', 0] },
-					providedFeedbacks: true,
-					noFeedbacks: true,
-					totalMeetings: { $size: '$totalMeetings' },
-				},
-			},
-		]);
-		if (summaryDeatils && summaryDeatils.length > 0) {
-			res.json({
-				noResponse: summaryDeatils[0].noFeedbacks,
-				allMeetings: summaryDeatils[0].totalMeetings,
-				allFeedback: summaryDeatils[0].providedFeedbacks,
-				avgScore: summaryDeatils[0].averageWeightage,
-			});
-		} else {
-			res.json({
-				noResponse: 0,
-				allMeetings: 0,
-				allFeedback: 0,
-				avgScore: 0,
-			});
+					{
+						$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true },
+					},
+					{
+						$lookup: {
+							from: 'feedbacks',
+							localField: '_id',
+							foreignField: 'meetingId',
+							as: 'feedbacks',
+						},
+					},
+					{
+						$project: {
+							weightage: '$feedback_data.weightage',
+							providedFeedbacks: {
+								$cond: {
+									if: {
+										$gt: [{ $size: '$feedbacks' }, 0],
+									},
+									then: { $size: '$feedbacks' },
+									else: 0,
+								},
+							},
+							noFeedbacks: {
+								$cond: {
+									if: {
+										$gt: [{ $size: '$feedbacks' }, 0],
+									},
+									then: 0,
+									else: 1,
+								},
+							},
+						},
+					},
+					{
+						$group: {
+							_id: '',
+							averageWeightage: { $avg: '$weightage' },
+							providedFeedbacks: { $sum: '$providedFeedbacks' },
+							noFeedbacks: { $sum: '$noFeedbacks' },
+							totalMeetings: { $push: { _id: '$_id' } },
+						},
+					},
+					{
+						$project: {
+							_id: false,
+							averageWeightage: { $ifNull: ['$averageWeightage', 0] },
+							providedFeedbacks: true,
+							noFeedbacks: true,
+							totalMeetings: { $size: '$totalMeetings' },
+						},
+					},
+				]);
+				if (summaryDeatils && summaryDeatils.length > 0) {
+					return res.json({
+						noResponse: summaryDeatils[0].noFeedbacks,
+						allMeetings: summaryDeatils[0].totalMeetings,
+						allFeedback: summaryDeatils[0].providedFeedbacks,
+						avgScore: summaryDeatils[0].averageWeightage,
+					});
+				} else {
+					return res.json({
+						noResponse: 0,
+						allMeetings: 0,
+						allFeedback: 0,
+						avgScore: 0,
+					});
+				}
+			}else {
+				console.log('not exist');
+				const summaryDeatils = await Meeting.aggregate([
+					{ $match: { _user: userId } },
+					{
+						$lookup: {
+							from: 'feedbacks',
+							let: { meeting_id: '$_id' },
+							pipeline: [
+								{
+									$match: {
+										$expr: {
+											$eq: ['$meetingId', '$$meeting_id'],
+										},
+									},
+								},
+								{ $unwind: { path: '$feedbackResults' } },
+								{
+									$project: {
+										question_id: {
+											$toObjectId: '$feedbackResults.questionId',
+										},
+										answer_id: {
+											$toObjectId: '$feedbackResults.answerId',
+										},
+									},
+								},
+								{
+									$lookup: {
+										from: 'questionanswers',
+										localField: 'question_id',
+										foreignField: '_id',
+										as: 'qa_data',
+									},
+								},
+								{ $unwind: { path: '$qa_data' } },
+								{
+									$project: {
+										answer_data: {
+											$filter: {
+												input: '$qa_data.answers',
+												as: 'item',
+												cond: { $eq: ['$$item.id', '$answer_id'] },
+											},
+										},
+									},
+								},
+								{ $unwind: { path: '$answer_data' } },
+								{
+									$group: {
+										_id: '',
+										weightage: { $avg: '$answer_data.weightage' },
+									},
+								},
+							],
+							as: 'feedback_data',
+						},
+					},
+					{
+						$unwind: { path: '$feedback_data', preserveNullAndEmptyArrays: true },
+					},
+					{
+						$lookup: {
+							from: 'feedbacks',
+							localField: '_id',
+							foreignField: 'meetingId',
+							as: 'feedbacks',
+						},
+					},
+					{
+						$project: {
+							weightage: '$feedback_data.weightage',
+							providedFeedbacks: {
+								$cond: {
+									if: {
+										$gt: [{ $size: '$feedbacks' }, 0],
+									},
+									then: { $size: '$feedbacks' },
+									else: 0,
+								},
+							},
+							noFeedbacks: {
+								$cond: {
+									if: {
+										$gt: [{ $size: '$feedbacks' }, 0],
+									},
+									then: 0,
+									else: 1,
+								},
+							},
+						},
+					},
+					{
+						$group: {
+							_id: '',
+							averageWeightage: { $avg: '$weightage' },
+							providedFeedbacks: { $sum: '$providedFeedbacks' },
+							noFeedbacks: { $sum: '$noFeedbacks' },
+							totalMeetings: { $push: { _id: '$_id' } },
+						},
+					},
+					{
+						$project: {
+							_id: false,
+							averageWeightage: { $ifNull: ['$averageWeightage', 0] },
+							providedFeedbacks: true,
+							noFeedbacks: true,
+							totalMeetings: { $size: '$totalMeetings' },
+						},
+					},
+				]);
+				if (summaryDeatils && summaryDeatils.length > 0) {
+					return res.json({
+						noResponse: summaryDeatils[0].noFeedbacks,
+						allMeetings: summaryDeatils[0].totalMeetings,
+						allFeedback: summaryDeatils[0].providedFeedbacks,
+						avgScore: summaryDeatils[0].averageWeightage,
+					});
+				} else {
+					return res.json({
+						noResponse: 0,
+						allMeetings: 0,
+						allFeedback: 0,
+						avgScore: 0,
+					});
+				}
+			}
+		} catch (error) {
+			next(error);
 		}
 	};
 	create = async(req, res, next) => {
@@ -283,7 +418,9 @@ class QuestionsController extends BaseController {
 
 	getStatsQuestion = async(req, res) => {
 		const userId = mongoose.Types.ObjectId(req.query.userId);
+		const { from, to } = req.query;
 		try {
+		if( from && to ) {
 			const result = await Questions.aggregate([
 				{
 					$lookup: {
@@ -296,6 +433,7 @@ class QuestionsController extends BaseController {
 							{
 								$project: {
 									_id: false,
+									createdAt: 1,
 									answer_id: { $toObjectId: '$feedbackResults.answerId' },
 									question_id: { $toObjectId: '$feedbackResults.questionId' },
 									meeting_id: '$meetingId',
@@ -318,6 +456,8 @@ class QuestionsController extends BaseController {
 										$and: [
 											{ $eq: ['$question_id', '$$question_id'] },
 											{ $eq: ['$meetings._user', userId] },
+											{ $gte: ['$meetings.createdAt', new Date(from)] },
+											{ $lte: ['$meetings.createdAt', new Date(to)] },
 										],
 									},
 								},
@@ -401,7 +541,127 @@ class QuestionsController extends BaseController {
 					},
 				},
 			]);
-			res.json(result);
+			return res.json(result);
+		}
+		const result = await Questions.aggregate([
+			{
+				$lookup: {
+					from: 'feedbacks',
+					let: { question_id: '$_id' },
+					pipeline: [
+						{
+							$unwind: { path: '$feedbackResults' },
+						},
+						{
+							$project: {
+								_id: false,
+								createdAt: 1,
+								answer_id: { $toObjectId: '$feedbackResults.answerId' },
+								question_id: { $toObjectId: '$feedbackResults.questionId' },
+								meeting_id: '$meetingId',
+							},
+						},
+						{
+							$lookup: {
+								from: 'meetings',
+								localField: 'meeting_id',
+								foreignField: '_id',
+								as: 'meetings',
+							},
+						},
+						{
+							$unwind: { path: '$meetings' },
+						},
+						{
+							$match: {
+								$expr: {
+									$and: [
+										{ $eq: ['$question_id', '$$question_id'] },
+										{ $eq: ['$meetings._user', userId] },
+									],
+								},
+							},
+						},
+					],
+					as: 'feedbacks',
+				},
+			},
+			{
+				$unwind: { path: '$answers' },
+			},
+			{
+				$project: {
+					answerCount: {
+						$size: {
+							$filter: {
+								input: '$feedbacks',
+								as: 'feedback',
+								cond: {
+									$eq: ['$$feedback.answer_id', '$answers.id'],
+								},
+							},
+						},
+					},
+					answer_id: '$answers.id',
+					answerText: '$answers.answer',
+					answerWeightage: '$answers.weightage',
+					questionText: '$question',
+				},
+			},
+			{
+				$group: {
+					_id: '$_id',
+					questionText: { $first: '$questionText' },
+					answers: {
+						$push: {
+							answerId: '$answer_id',
+							answerText: '$answerText',
+							answerCount: '$answerCount',
+							weightage: '$answerWeightage',
+						},
+					},
+					totalCount: { $sum: '$answerCount' },
+					questionAnswered: { $push: { _id: '$_id' } },
+				},
+			},
+			{
+				$unwind: { path: '$answers' },
+			},
+			{
+				$sort: {
+					'answers.weightage': -1,
+				},
+			},
+			{
+				$group: {
+					_id: '$_id',
+					question: { $first: '$questionText' },
+					answers: {
+						$push: '$answers.answerCount', // {
+							// id: '$answers.answerId',
+							// answer: '$answers.answerText',
+							// weightage: '$answers.weightage',
+							// count: '$answers.answerCount',
+							// percentage: {
+							// 	$cond: [
+							// 		{ $eq: ['$totalCount', 0] },
+							// 		0,
+							// 		{
+							// 			$multiply: [{ $divide: ['$answers.answerCount', '$totalCount'] }, 100],
+							// 		},
+							// 	],
+							// },
+						// },
+					},
+				},
+			},
+			{
+				$sort: {
+					'answers.weightage': -1,
+				},
+			},
+		]);
+		return res.json(result);
 		} catch (err) {
 			// console.log('err', err);
 		}
