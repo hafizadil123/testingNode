@@ -117,7 +117,6 @@ class QuestionsController extends BaseController {
 		const { from, to } = req.query;
 		try {
 			if( from && to) {
-				console.log('exist');
 				const summaryDeatils = await Meeting.aggregate([
 					{ $match: { $and: [{ createdAt: { $gte: new Date(from), $lte: new Date(to) } }, { _user: userId }] } },
 					{
@@ -243,7 +242,6 @@ class QuestionsController extends BaseController {
 					});
 				}
 			}else {
-				console.log('not exist');
 				const summaryDeatils = await Meeting.aggregate([
 					{ $match: { _user: userId } },
 					{
