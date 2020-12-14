@@ -54,6 +54,7 @@ export const events = async(req, res) => {
 							dateEnd: moment(data.dateEnd).utc().format('dddd, MMMM Do, YYYY, h:mm a'),
 							// location: data.location,
 							endDatWithoutEncoding: data.dateEnd,
+							startDatWithoutEncoding: data.dateStart,
 							status: data.status,
 							uId: data.uId,
 							_user: userId,

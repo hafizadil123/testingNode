@@ -36,7 +36,11 @@ const MeetingSchema = new Schema(
 			default: null,
 		},
 		endDatWithoutEncoding: {
-			type: String,
+			type: Date,
+			default: null,
+		},
+		startDatWithoutEncoding: {
+			type: Date,
 			default: null,
 		},
 		isFeedback: {
