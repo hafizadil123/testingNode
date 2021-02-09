@@ -137,9 +137,9 @@ class MeetingsController extends BaseController {
 		const totalMeetings = await Meeting.find({}).count();
 		const totalFeedbacks = await Feedback.find({}).count();
 		const totalInvitees = await Invite.find({}).count();
-		if (!totalMeetings || !totalFeedbacks || !totalInvitees) {
-			return res.status(400).json({ message: 'not found!' });
-		}
+		// if (!totalMeetings || !totalFeedbacks || !totalInvitees) {
+		// 	return res.status(400).json({ message: 'not found!' });
+		// }
 		const responseObj = {
 			thisWeekMeetings: thisWeekMeetings,
 			totalMeetings: totalMeetings,
